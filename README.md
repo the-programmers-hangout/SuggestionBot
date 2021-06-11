@@ -1,3 +1,3 @@
-# DiscordKt Starter
+# Suggestion Bot
 
-A template repo with a starter setup for DiscordKt bots.
+A bot to manage suggestions for a Discord Guild.

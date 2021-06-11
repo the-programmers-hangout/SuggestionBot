@@ -23,10 +23,10 @@ tasks {
     }
 
     shadowJar {
-        archiveFileName.set("Starter.jar")
+        archiveFileName.set("Suggestions.jar")
         manifest {
             attributes(
-                "Main-Class" to "me.ddivad.starter.MainKt"
+                "Main-Class" to "me.ddivad.suggestions.MainKt"
             )
         }
     }
@@ -34,5 +34,5 @@ tasks {
 
 object Versions {
     const val BOT = "1.0.0"
-    const val DISCORDKT = "0.21.0"
+    const val DISCORDKT = "0.21.3"
 }

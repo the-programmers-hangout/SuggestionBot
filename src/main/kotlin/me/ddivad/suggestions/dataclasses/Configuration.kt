@@ -1,7 +1,8 @@
-package me.ddivad.starter.dataclasses
+package me.ddivad.suggestions.dataclasses
 
 import com.gitlab.kordlib.core.entity.Guild
 import com.gitlab.kordlib.core.entity.Role
+import com.gitlab.kordlib.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.api.dsl.Data
 
 data class Configuration(
@@ -12,14 +13,16 @@ data class Configuration(
     operator fun get(id: Long) = guildConfigurations[id]
     fun hasGuildConfig(guildId: Long) = guildConfigurations.containsKey(guildId)
 
-    fun setup(guild: Guild, prefix: String, adminRole: Role, staffRole: Role) {
+    fun setup(guild: Guild, prefix: String, adminRole: Role, staffRole: Role, suggestionChannel: TextChannel, suggestionReviewChannel: TextChannel) {
         if (guildConfigurations[guild.id.longValue] != null) return
 
         val newConfiguration = GuildConfiguration(
                 guild.id.value,
                 prefix,
-                staffRole.id.longValue,
-                adminRole.id.longValue
+                staffRole.id.value,
+                adminRole.id.value,
+                suggestionChannel.id.value,
+                suggestionReviewChannel.id.value
         )
         guildConfigurations[guild.id.longValue] = newConfiguration
         save()
@@ -29,6 +32,8 @@ data class Configuration(
 data class GuildConfiguration(
         val id: String = "",
         var prefix: String = "++",
-        var staffRoleId: Long,
-        var adminRoleId: Long
+        var staffRoleId: String,
+        var adminRoleId: String,
+        var suggestionChannel: String,
+        var suggestionReviewChannel: String
 )

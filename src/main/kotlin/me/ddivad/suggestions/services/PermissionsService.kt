@@ -1,12 +1,10 @@
-package me.ddivad.starter.services
+package me.ddivad.suggestions.services
 
 import com.gitlab.kordlib.core.any
 import com.gitlab.kordlib.core.entity.Guild
 import com.gitlab.kordlib.core.entity.Member
 import com.gitlab.kordlib.core.entity.User
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import me.ddivad.starter.dataclasses.Configuration
+import me.ddivad.suggestions.dataclasses.Configuration
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.dsl.Command
 
@@ -45,8 +43,8 @@ class PermissionsService(private val configuration: Configuration) {
 
     private fun Member.isBotOwner() = id.value == configuration.ownerId
     private suspend fun Member.isGuildOwner() = isOwner()
-    private suspend fun Member.isAdministrator() = roles.any { it.id.longValue == configuration[guild.id.longValue]?.adminRole }
-    private suspend fun Member.isStaff() = roles.any { it.id.longValue == configuration[guild.id.longValue]?.staffRole }
+    private suspend fun Member.isAdministrator() = roles.any { it.id.value == configuration[guild.id.longValue]?.adminRoleId }
+    private suspend fun Member.isStaff() = roles.any { it.id.value == configuration[guild.id.longValue]?.staffRoleId }
 }
 
 var Command.requiredPermissionLevel: PermissionLevel

@@ -1,9 +1,9 @@
-package me.ddivad.starter.commands
+package me.ddivad.suggestions.commands
 
-import me.ddivad.starter.conversations.ConfigurationConversation
-import me.ddivad.starter.dataclasses.Configuration
-import me.ddivad.starter.services.PermissionLevel
-import me.ddivad.starter.services.requiredPermissionLevel
+import me.ddivad.suggestions.conversations.ConfigurationConversation
+import me.ddivad.suggestions.dataclasses.Configuration
+import me.ddivad.suggestions.services.PermissionLevel
+import me.ddivad.suggestions.services.requiredPermissionLevel
 import me.jakejmattson.discordkt.api.arguments.EveryArg
 import me.jakejmattson.discordkt.api.arguments.RoleArg
 import me.jakejmattson.discordkt.api.dsl.commands
@@ -48,7 +48,7 @@ fun guildConfigCommands(configuration: Configuration) = commands("Configuration"
                 return@execute
             }
             val role = args.first
-            configuration[guild.id.longValue]?.staffRoleId = role.id.longValue
+            configuration[guild.id.longValue]?.staffRoleId = role.id.value
             configuration.save()
             respond("Role set to: **${role.name}**")
         }
@@ -63,7 +63,7 @@ fun guildConfigCommands(configuration: Configuration) = commands("Configuration"
                 return@execute
             }
             val role = args.first
-            configuration[guild.id.longValue]?.adminRoleId = role.id.longValue
+            configuration[guild.id.longValue]?.adminRoleId = role.id.value
             configuration.save()
             respond("Role set to: **${role.name}**")
         }

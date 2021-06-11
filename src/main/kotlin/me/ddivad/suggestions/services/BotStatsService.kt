@@ -1,6 +1,6 @@
-package me.ddivad.starter.services
+package me.ddivad.suggestions.services
 
-import me.ddivad.starter.dataclasses.Configuration
+import me.ddivad.suggestions.dataclasses.Configuration
 import me.jakejmattson.discordkt.api.Discord
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.extensions.toTimeString
