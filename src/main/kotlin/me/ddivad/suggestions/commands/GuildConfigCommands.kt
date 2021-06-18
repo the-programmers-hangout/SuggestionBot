@@ -8,6 +8,7 @@ import me.jakejmattson.discordkt.api.arguments.EveryArg
 import me.jakejmattson.discordkt.api.arguments.RoleArg
 import me.jakejmattson.discordkt.api.dsl.commands
 
+@Suppress("unused")
 fun guildConfigCommands(configuration: Configuration) = commands("Configuration") {
     guildCommand("configure") {
         description = "Configure a guild to use this bot."
