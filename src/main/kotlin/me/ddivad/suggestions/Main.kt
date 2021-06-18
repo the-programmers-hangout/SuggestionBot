@@ -5,6 +5,7 @@ import com.gitlab.kordlib.gateway.Intents
 import com.gitlab.kordlib.gateway.PrivilegedIntent
 import me.ddivad.suggestions.dataclasses.Configuration
 import me.ddivad.suggestions.services.BotStatsService
+import me.ddivad.suggestions.services.PermissionLevel
 import me.ddivad.suggestions.services.PermissionsService
 import me.ddivad.suggestions.services.requiredPermissionLevel
 import me.jakejmattson.discordkt.api.dsl.bot
@@ -12,16 +13,15 @@ import me.jakejmattson.discordkt.api.extensions.addInlineField
 import java.awt.Color
 
 @PrivilegedIntent
-suspend fun main(args: Array<String>) {
+suspend fun main() {
     val token = System.getenv("BOT_TOKEN") ?: null
-    val prefix = System.getenv("DEFAULT_PREFIX") ?: "<none>"
+    val prefix = System.getenv("DEFAULT_PREFIX") ?: "s!"
 
     require(token != null) { "Expected the bot token as an environment variable" }
 
     bot(token) {
         prefix {
             val configuration = discord.getInjectionObjects(Configuration::class)
-
             guild?.let { configuration[it.id.longValue]?.prefix } ?: prefix
         }
 
@@ -44,10 +44,10 @@ suspend fun main(args: Array<String>) {
 
             field {
                 name = self.tag
-                value = "A template for a DiscordKt bot. Change this for your bot's description."
+                value = "A bot to manage suggestions for a guild."
             }
 
-            addInlineField("Prefix", it.prefix())
+            addInlineField("Prefix", "`${it.prefix()}`")
             addInlineField("Contributors", "ddivad#0001")
 
             val kotlinVersion = KotlinVersion.CURRENT
@@ -72,20 +72,23 @@ suspend fun main(args: Array<String>) {
         }
 
         permissions {
-            val permissionsService = discord.getInjectionObjects(PermissionsService::class)
-            val permission = command.requiredPermissionLevel
-            if (guild != null)
-                permissionsService.hasClearance(guild!!, user, permission)
-            else
-                false
+            if (guild != null) {
+                val member = user.asMember(guild!!.id)
+                val permission = command.requiredPermissionLevel
+                val permissionsService = discord.getInjectionObjects(PermissionsService::class)
+                return@permissions permissionsService.hasClearance(guild, member, permission)
+            } else return@permissions command.requiredPermissionLevel == PermissionLevel.Everyone
         }
 
         intents {
             Intents.nonPrivileged.intents.forEach {
                 +it
             }
-
             +Intent.GuildMembers
+        }
+
+        presence {
+            playing("s!suggest")
         }
     }
 }

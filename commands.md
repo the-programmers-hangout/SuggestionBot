@@ -13,6 +13,12 @@
 | setprefix    | Text      | Set the bot prefix.                |
 | setstaffrole | Role      | Set the bot staff role.            |
 
+## Suggestions
+| Commands | Arguments     | Description        |
+| -------- | ------------- | ------------------ |
+| progress | Suggestion Id | <No Description>   |
+| suggest  | Suggestion    | Make a suggestion. |
+
 ## Utility
 | Commands | Arguments | Description          |
 | -------- | --------- | -------------------- |
