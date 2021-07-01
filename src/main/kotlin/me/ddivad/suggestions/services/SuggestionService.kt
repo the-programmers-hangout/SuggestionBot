@@ -53,13 +53,16 @@ class SuggestionService(private val configuration: Configuration) {
     suspend fun updateStatus(guild: Guild, suggestion: Suggestion, status: SuggestionStatus) {
         val guildConfiguration = configuration[guild.id.longValue] ?: return
         suggestion.status = status
+        configuration.save()
 
         val reviewMessage = this.getReviewMessage(guild, suggestion.reviewMessageId)
         val suggestionMessage = this.getPublishedMessage(guild, suggestion.publishedMessageId)
+        println(suggestion.status)
+        println(reviewMessage)
         when (suggestion.status) {
             SuggestionStatus.POSTED -> {
-                val suggestionChannel = guild.getChannelOf<TextChannel>(guildConfiguration.suggestionChannel.toSnowflake())
                 if (suggestion.publishedMessageId == null) {
+                    val suggestionChannel = guild.getChannelOf<TextChannel>(guildConfiguration.suggestionChannel.toSnowflake())
                     suggestionChannel.createEmbed { createSuggestionEmbed(guild, suggestion) }.let {
                         it.addReaction(Emojis.thumbsup)
                         it.addReaction(Emojis.thumbdown)
@@ -82,7 +85,6 @@ class SuggestionService(private val configuration: Configuration) {
                 reviewMessage?.edit { this.embed { updateSuggestionReviewEmbed(guild, suggestion) } }
             }
         }
-        configuration.save()
     }
 
     private suspend fun getReviewMessage(guild: Guild, messageId: String?): Message? {

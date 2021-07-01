@@ -45,4 +45,26 @@ fun suggestionCommands(configuration: Configuration, suggestionService: Suggesti
             }
         }
     }
+
+    guildCommand("progress") {
+        execute(IntegerArg("Suggestion Id")) {
+            val suggestion = suggestionService.findSuggestionById(guild, args.first)
+            if (suggestion != null) {
+                when (suggestion.status) {
+                    SuggestionStatus.NEW -> suggestionService.updateStatus(guild, suggestion, SuggestionStatus.POSTED)
+                    SuggestionStatus.POSTED -> suggestionService.updateStatus(
+                        guild,
+                        suggestion,
+                        SuggestionStatus.UNDER_REVIEW
+                    )
+                    SuggestionStatus.UNDER_REVIEW -> suggestionService.updateStatus(
+                        guild,
+                        suggestion,
+                        SuggestionStatus.IMPLEMENTED
+                    )
+                    else -> suggestionService.updateStatus(guild, suggestion, SuggestionStatus.NEW)
+                }
+            }
+        }
+    }
 }

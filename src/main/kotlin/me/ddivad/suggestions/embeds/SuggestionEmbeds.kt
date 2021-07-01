@@ -12,25 +12,33 @@ import java.awt.Color
 
 suspend fun EmbedBuilder.createSuggestionEmbed(guild: Guild, suggestion: Suggestion) {
     val author = guild.kord.getUser(suggestion.author.toSnowflake()) ?: return
+
+    author {
+        icon = author.avatar.url
+        name = "Suggestion from ${author.tag}"
+    }
     thumbnail {
         url = guild.getIconUrl(Image.Format.PNG) ?: ""
     }
-    title = "Suggestion - ${suggestion.id}"
     color = Color.YELLOW
     description = suggestion.suggestion
-    footer {
-        icon = author.avatar.url
-        text = author.tag
-    }
     addField("Status", "${suggestion.status}")
+    footer {
+        text = "Suggestion ID: ${suggestion.id}"
+    }
 }
 
 suspend fun EmbedBuilder.updateSuggestionEmbed(guild: Guild, suggestion: Suggestion) {
     val author = guild.kord.getUser(suggestion.author.toSnowflake()) ?: return
+
+    author {
+        icon = author.avatar.url
+        name = "Suggestion from ${author.tag}"
+    }
+
     thumbnail {
         url = guild.getIconUrl(Image.Format.PNG) ?: ""
     }
-    title = "Suggestion - ${suggestion.id}"
     color = when (suggestion.status) {
         SuggestionStatus.NEW -> Color.GREEN
         SuggestionStatus.POSTED -> Color.YELLOW
@@ -40,15 +48,24 @@ suspend fun EmbedBuilder.updateSuggestionEmbed(guild: Guild, suggestion: Suggest
     }
     description = suggestion.suggestion
 
+    addField("Status", "${suggestion.status}")
+
+    val upvotes = suggestion.upvotes.size
+    val downvotes = suggestion.downvotes.size
+    val totalvotes = upvotes + downvotes
     if (suggestion.status == SuggestionStatus.UNDER_REVIEW || suggestion.status == SuggestionStatus.REJECTED) {
-        addInlineField("Upvotes", "${suggestion.upvotes.size}")
-        addInlineField("Downvotes", "${suggestion.downvotes.size}")
+        field {
+            name = "Votes"
+            value = """
+                Opinion: ${upvotes - downvotes}
+                Upvotes: $upvotes `${upvotes / totalvotes * 100}%`
+                Downvotes: $downvotes ` ${downvotes / totalvotes * 100} %`
+            """.trimIndent()
+        }
     }
 
     footer {
-        icon = author.avatar.url
-        text = author.tag
+        text = "Suggestion ID: ${suggestion.id}"
     }
-    addField("Status", "${suggestion.status}")
 }
 
