@@ -1,17 +1,16 @@
 package me.ddivad.suggestions.embeds
 
-import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.rest.Image
-import com.gitlab.kordlib.rest.builder.message.EmbedBuilder
+import dev.kord.common.kColor
+import dev.kord.core.entity.Guild
+import dev.kord.rest.Image
+import dev.kord.rest.builder.message.EmbedBuilder
 import me.ddivad.suggestions.dataclasses.Suggestion
 import me.ddivad.suggestions.dataclasses.SuggestionStatus
 import me.jakejmattson.discordkt.api.extensions.addField
-import me.jakejmattson.discordkt.api.extensions.addInlineField
-import me.jakejmattson.discordkt.api.extensions.toSnowflake
 import java.awt.Color
 
 suspend fun EmbedBuilder.createSuggestionReviewEmbed(guild: Guild, suggestion: Suggestion) {
-    val author = guild.kord.getUser(suggestion.author.toSnowflake()) ?: return
+    val author = guild.kord.getUser(suggestion.author) ?: return
 
     author {
         icon = author.avatar.url
@@ -20,7 +19,7 @@ suspend fun EmbedBuilder.createSuggestionReviewEmbed(guild: Guild, suggestion: S
     thumbnail {
         url = guild.getIconUrl(Image.Format.PNG) ?: ""
     }
-    color = Color.GREEN
+    color = Color.GREEN.kColor
     description = suggestion.suggestion
     addField("Status", "${suggestion.status}")
 
@@ -30,7 +29,7 @@ suspend fun EmbedBuilder.createSuggestionReviewEmbed(guild: Guild, suggestion: S
 }
 
 suspend fun EmbedBuilder.updateSuggestionReviewEmbed(guild: Guild, suggestion: Suggestion) {
-    val author = guild.kord.getUser(suggestion.author.toSnowflake()) ?: return
+    val author = guild.kord.getUser(suggestion.author) ?: return
     
     author {
         icon = author.avatar.url
@@ -40,11 +39,11 @@ suspend fun EmbedBuilder.updateSuggestionReviewEmbed(guild: Guild, suggestion: S
         url = guild.getIconUrl(Image.Format.PNG) ?: ""
     }
     color = when (suggestion.status) {
-        SuggestionStatus.NEW -> Color.GREEN
-        SuggestionStatus.POSTED -> Color.YELLOW
-        SuggestionStatus.UNDER_REVIEW -> Color.ORANGE
-        SuggestionStatus.IMPLEMENTED -> Color.MAGENTA
-        SuggestionStatus.REJECTED -> Color.RED
+        SuggestionStatus.NEW -> Color.GREEN.kColor
+        SuggestionStatus.POSTED -> Color.YELLOW.kColor
+        SuggestionStatus.UNDER_REVIEW -> Color.ORANGE.kColor
+        SuggestionStatus.IMPLEMENTED -> Color.MAGENTA.kColor
+        SuggestionStatus.REJECTED -> Color.RED.kColor
     }
     description = suggestion.suggestion
     addField("Status", "${suggestion.status}")

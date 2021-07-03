@@ -1,7 +1,7 @@
 package me.ddivad.suggestions.conversations
 
-import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.core.entity.Message
+import dev.kord.common.kColor
+import dev.kord.core.entity.Guild
 import me.ddivad.suggestions.dataclasses.Configuration
 import me.ddivad.suggestions.dataclasses.Suggestion
 import me.ddivad.suggestions.services.SuggestionService
@@ -19,9 +19,9 @@ fun guildChoiceConversation(
         title = "Select Server"
         description = "Respond with the server you want your suggestion to be posted."
         thumbnail {
-            url = discord.api.getSelf().avatar.url
+            url = discord.kord.getSelf().avatar.url
         }
-        color = Color.MAGENTA
+        color = Color.MAGENTA.kColor
         guilds.toList().forEachIndexed { index, guild ->
             field {
                 name = "${index + 1}) ${guild.name}"
@@ -30,9 +30,9 @@ fun guildChoiceConversation(
     } - 1
 
     val guild = guilds[guildIndex]
-    val guildConfiguration = configuration[guild.id.longValue] ?: return@conversation
+    val guildConfiguration = configuration[guild.id] ?: return@conversation
     val nextId: Int =
         if (guildConfiguration.suggestions.isEmpty()) 1 else guildConfiguration.suggestions.maxByOrNull { it.id }!!.id + 1
-    val suggestion = Suggestion(user.id.value, suggestionMessage, id = nextId)
+    val suggestion = Suggestion(user.id, suggestionMessage, id = nextId)
     suggestionService.addSuggestion(guild, suggestion)
 }
