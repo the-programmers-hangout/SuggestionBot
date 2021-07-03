@@ -3,7 +3,7 @@
 ## Key 
 | Symbol      | Meaning                        |
 | ----------- | ------------------------------ |
-| (Argument)  | Argument is not required.      |
+| [Argument]  | Argument is not required.      |
 
 ## Configuration
 | Commands     | Arguments | Description                        |
@@ -16,11 +16,11 @@
 ## Suggestions
 | Commands | Arguments     | Description        |
 | -------- | ------------- | ------------------ |
-| progress | Suggestion Id | <No Description>   |
+| progress | Suggestion Id |                    |
 | suggest  | Suggestion    | Make a suggestion. |
 
 ## Utility
 | Commands | Arguments | Description          |
 | -------- | --------- | -------------------- |
-| Help     | (Command) | Display a help menu. |
+| Help     | [Command] | Display a help menu. |
 

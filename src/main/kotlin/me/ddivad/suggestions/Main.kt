@@ -1,8 +1,7 @@
 package me.ddivad.suggestions
 
-import com.gitlab.kordlib.gateway.Intent
-import com.gitlab.kordlib.gateway.Intents
-import com.gitlab.kordlib.gateway.PrivilegedIntent
+import dev.kord.common.kColor
+import dev.kord.gateway.PrivilegedIntent
 import me.ddivad.suggestions.dataclasses.Configuration
 import me.ddivad.suggestions.services.BotStatsService
 import me.ddivad.suggestions.services.PermissionLevel
@@ -22,7 +21,7 @@ suspend fun main() {
     bot(token) {
         prefix {
             val configuration = discord.getInjectionObjects(Configuration::class)
-            guild?.let { configuration[it.id.longValue]?.prefix } ?: prefix
+            guild?.let { configuration[it.id]?.prefix } ?: prefix
         }
 
         configure {
@@ -36,7 +35,7 @@ suspend fun main() {
             val channel = it.channel
             val self = channel.kord.getSelf()
 
-            color = it.discord.configuration.theme
+            color = it.discord.configuration.theme?.kColor
 
             thumbnail {
                 url = self.avatar.url
@@ -78,13 +77,6 @@ suspend fun main() {
                 val permissionsService = discord.getInjectionObjects(PermissionsService::class)
                 return@permissions permissionsService.hasClearance(guild, member, permission)
             } else return@permissions command.requiredPermissionLevel == PermissionLevel.Everyone
-        }
-
-        intents {
-            Intents.nonPrivileged.intents.forEach {
-                +it
-            }
-            +Intent.GuildMembers
         }
 
         presence {

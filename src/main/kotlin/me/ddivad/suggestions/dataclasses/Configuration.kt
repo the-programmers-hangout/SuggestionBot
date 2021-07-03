@@ -1,21 +1,18 @@
 package me.ddivad.suggestions.dataclasses
 
-import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.core.entity.ReactionEmoji
-import com.gitlab.kordlib.core.entity.Role
-import com.gitlab.kordlib.core.entity.channel.TextChannel
-import com.gitlab.kordlib.kordx.emoji.Emojis
-import com.gitlab.kordlib.rest.route.Route
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.Guild
+import dev.kord.core.entity.Role
+import dev.kord.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.api.dsl.Data
 
 data class Configuration(
-    val ownerId: String = "insert-owner-id",
+    val ownerId: Snowflake? = null,
     var prefix: String = "++",
     val guildConfigurations: MutableMap<Long, GuildConfiguration> = mutableMapOf()
 ) : Data("config/config.json") {
-    operator fun get(id: Long) = guildConfigurations[id]
-    fun hasGuildConfig(guildId: Long) = guildConfigurations.containsKey(guildId)
-
+    fun hasGuildConfig(guildId: Snowflake) = guildConfigurations.containsKey(guildId.value)
+    operator fun get(id: Snowflake) = guildConfigurations[id.value]
     fun setup(
         guild: Guild,
         prefix: String,
@@ -24,27 +21,27 @@ data class Configuration(
         suggestionChannel: TextChannel,
         suggestionReviewChannel: TextChannel
     ) {
-        if (guildConfigurations[guild.id.longValue] != null) return
+        if (guildConfigurations[guild.id.value] != null) return
 
         val newConfiguration = GuildConfiguration(
             guild.id.value,
             prefix,
-            staffRole.id.value,
-            adminRole.id.value,
-            suggestionChannel.id.value,
-            suggestionReviewChannel.id.value
+            staffRole.id,
+            adminRole.id,
+            suggestionChannel.id,
+            suggestionReviewChannel.id
         )
-        guildConfigurations[guild.id.longValue] = newConfiguration
+        guildConfigurations[guild.id.value] = newConfiguration
         save()
     }
 }
 
 data class GuildConfiguration(
-    val id: String = "",
+    val id: Long? = null,
     var prefix: String = "s!",
-    var staffRoleId: String,
-    var adminRoleId: String,
-    var suggestionChannel: String,
-    var suggestionReviewChannel: String,
+    var staffRoleId: Snowflake,
+    var adminRoleId: Snowflake,
+    var suggestionChannel: Snowflake,
+    var suggestionReviewChannel: Snowflake,
     val suggestions: MutableList<Suggestion> = mutableListOf(),
 )
