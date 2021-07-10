@@ -66,16 +66,8 @@ class SuggestionService(private val configuration: Configuration, private val di
                 }
                 reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
             }
-            SuggestionStatus.UNDER_REVIEW -> {
+            in setOf(SuggestionStatus.UNDER_REVIEW, SuggestionStatus.IMPLEMENTED,SuggestionStatus.REJECTED) -> {
                 suggestionMessage?.deleteAllReactions()
-                suggestionMessage?.edit { this.embed { createSuggestionEmbed(guild, suggestion) } }
-                reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
-            }
-            SuggestionStatus.IMPLEMENTED -> {
-                suggestionMessage?.edit { this.embed { createSuggestionEmbed(guild, suggestion) } }
-                reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
-            }
-            SuggestionStatus.REJECTED -> {
                 suggestionMessage?.edit { this.embed { createSuggestionEmbed(guild, suggestion) } }
                 reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
             }

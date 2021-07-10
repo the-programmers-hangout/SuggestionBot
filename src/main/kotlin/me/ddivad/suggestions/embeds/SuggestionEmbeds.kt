@@ -55,4 +55,3 @@ suspend fun EmbedBuilder.createSuggestionEmbed(guild: Guild, suggestion: Suggest
         text = "Suggestion ID: ${suggestion.id}"
     }
 }
-
