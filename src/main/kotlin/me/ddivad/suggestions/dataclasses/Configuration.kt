@@ -7,7 +7,7 @@ import dev.kord.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.api.dsl.Data
 
 data class Configuration(
-    val ownerId: Snowflake? = null,
+    val ownerId: String = "<insert id here>",
     var prefix: String = "++",
     val guildConfigurations: MutableMap<Long, GuildConfiguration> = mutableMapOf()
 ) : Data("config/config.json") {

@@ -6,29 +6,11 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.Image
 import me.ddivad.suggestions.dataclasses.Suggestion
 import me.ddivad.suggestions.dataclasses.SuggestionStatus
+import me.ddivad.suggestions.util.getVoteCounts
 import me.jakejmattson.discordkt.api.extensions.addField
 import java.awt.Color
 
 suspend fun EmbedBuilder.createSuggestionEmbed(guild: Guild, suggestion: Suggestion) {
-
-    val author = guild.kord.getUser(suggestion.author) ?: return
-
-    author {
-        icon = author.avatar.url
-        name = "Suggestion from ${author.tag}"
-    }
-    thumbnail {
-        url = guild.getIconUrl(Image.Format.PNG) ?: ""
-    }
-    color = Color.YELLOW.kColor
-    description = suggestion.suggestion
-    addField("Status", "${suggestion.status}")
-    footer {
-        text = "Suggestion ID: ${suggestion.id}"
-    }
-}
-
-suspend fun EmbedBuilder.updateSuggestionEmbed(guild: Guild, suggestion: Suggestion) {
     val author = guild.kord.getUser(suggestion.author) ?: return
 
     author {
@@ -42,7 +24,7 @@ suspend fun EmbedBuilder.updateSuggestionEmbed(guild: Guild, suggestion: Suggest
     color = when (suggestion.status) {
         SuggestionStatus.NEW -> Color.GREEN.kColor
         SuggestionStatus.POSTED -> Color.YELLOW.kColor
-        SuggestionStatus.UNDER_REVIEW -> Color.ORANGE.kColor
+        SuggestionStatus.UNDER_REVIEW -> Color.GREEN.kColor
         SuggestionStatus.IMPLEMENTED -> Color.MAGENTA.kColor
         SuggestionStatus.REJECTED -> Color.RED.kColor
     }
@@ -50,17 +32,22 @@ suspend fun EmbedBuilder.updateSuggestionEmbed(guild: Guild, suggestion: Suggest
 
     addField("Status", "${suggestion.status}")
 
-    val upvotes = suggestion.upvotes.size
-    val downvotes = suggestion.downvotes.size
-    val totalvotes = upvotes + downvotes
-    if (suggestion.status == SuggestionStatus.UNDER_REVIEW || suggestion.status == SuggestionStatus.REJECTED) {
+    val voteInfo = getVoteCounts(suggestion)
+
+    if (suggestion.status != SuggestionStatus.POSTED) {
         field {
             name = "Votes"
             value = """
-                Opinion: ${upvotes - downvotes}
-                Upvotes: $upvotes `${upvotes / totalvotes * 100}%`
-                Downvotes: $downvotes ` ${downvotes / totalvotes * 100} %`
+                Opinion: ${voteInfo.upVotes - voteInfo.downVotes}
+                Upvotes: ${voteInfo.upVotes} `${voteInfo.upvotePercentage} %`
+                Downvotes: ${voteInfo.downVotes} ` ${voteInfo.downVotePercentage} %`
             """.trimIndent()
+        }
+    }
+
+    if (suggestion.status == SuggestionStatus.POSTED) {
+        field {
+            value = "Note: reactions are removed after voting, but all votes are counted. Results will be made available later."
         }
     }
 

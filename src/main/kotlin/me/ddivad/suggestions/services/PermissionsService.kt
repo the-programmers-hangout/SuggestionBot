@@ -24,7 +24,7 @@ class PermissionsService(private val configuration: Configuration) {
     suspend fun hasClearance(guild: Guild?, user: User, requiredPermissionLevel: PermissionLevel): Boolean {
         val permissionLevel = guild?.getMember(user.id)?.let { getPermissionLevel(it) }
         return if (permissionLevel == null) {
-            requiredPermissionLevel == PermissionLevel.Everyone || user.id == configuration.ownerId
+            requiredPermissionLevel == PermissionLevel.Everyone || user.id.asString == configuration.ownerId
         } else {
             permissionLevel >= requiredPermissionLevel
         }
@@ -41,7 +41,7 @@ class PermissionsService(private val configuration: Configuration) {
             else -> PermissionLevel.Everyone
         }
 
-    private fun Member.isBotOwner() = id == configuration.ownerId
+    private fun Member.isBotOwner() = id.asString == configuration.ownerId
     private suspend fun Member.isGuildOwner() = isOwner()
     private suspend fun Member.isAdministrator() =
         roles.any { it.id == configuration[guild.id]?.adminRoleId }

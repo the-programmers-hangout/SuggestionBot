@@ -1,9 +1,7 @@
 package me.ddivad.suggestions.services
 
-import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
-import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.getChannelOf
 import dev.kord.core.entity.Guild
@@ -15,23 +13,18 @@ import dev.kord.x.emoji.toReaction
 import me.ddivad.suggestions.dataclasses.Configuration
 import me.ddivad.suggestions.dataclasses.Suggestion
 import me.ddivad.suggestions.dataclasses.SuggestionStatus
-import me.ddivad.suggestions.embeds.createSuggestionEmbed
-import me.ddivad.suggestions.embeds.createSuggestionReviewEmbed
-import me.ddivad.suggestions.embeds.updateSuggestionEmbed
-import me.ddivad.suggestions.embeds.updateSuggestionReviewEmbed
+import me.ddivad.suggestions.embeds.*
+import me.jakejmattson.discordkt.api.Discord
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.extensions.button
-import java.util.*
+import me.jakejmattson.discordkt.api.extensions.createMenu
 
 @Service
-class SuggestionService(private val configuration: Configuration) {
+class SuggestionService(private val configuration: Configuration, private val discord: Discord) {
     suspend fun addSuggestion(guild: Guild, suggestion: Suggestion) {
         val guildConfiguration = configuration[guild.id] ?: return
         val reviewChannel = guild.getChannelOf<TextChannel>(guildConfiguration.suggestionReviewChannel)
-        reviewChannel.createEmbed { createSuggestionReviewEmbed(guild, suggestion) }.let {
-            it.addReaction(Emojis.whiteCheckMark.toReaction())
-            it.addReaction(Emojis.x.toReaction())
-            suggestion.addReviewMessageId(it.id)
+        reviewChannel.createMenu { createSuggestionReviewMenu(discord, guild, suggestion) }.let {
+            suggestion.addReviewMessageId(it!!.id)
             guildConfiguration.suggestions.add(suggestion)
             configuration.save()
         }
@@ -71,20 +64,20 @@ class SuggestionService(private val configuration: Configuration) {
                         suggestion.addPublishMessageId(it.id)
                     }
                 }
-                reviewMessage?.edit { this.embed { updateSuggestionReviewEmbed(guild, suggestion) } }
+                reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
             }
             SuggestionStatus.UNDER_REVIEW -> {
                 suggestionMessage?.deleteAllReactions()
-                suggestionMessage?.edit { this.embed { updateSuggestionEmbed(guild, suggestion) } }
-                reviewMessage?.edit { this.embed { updateSuggestionReviewEmbed(guild, suggestion) } }
+                suggestionMessage?.edit { this.embed { createSuggestionEmbed(guild, suggestion) } }
+                reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
             }
             SuggestionStatus.IMPLEMENTED -> {
-                suggestionMessage?.edit { this.embed { updateSuggestionEmbed(guild, suggestion) } }
-                reviewMessage?.edit { this.embed { updateSuggestionReviewEmbed(guild, suggestion) } }
+                suggestionMessage?.edit { this.embed { createSuggestionEmbed(guild, suggestion) } }
+                reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
             }
             SuggestionStatus.REJECTED -> {
-                suggestionMessage?.edit { this.embed { updateSuggestionEmbed(guild, suggestion) } }
-                reviewMessage?.edit { this.embed { updateSuggestionReviewEmbed(guild, suggestion) } }
+                suggestionMessage?.edit { this.embed { createSuggestionEmbed(guild, suggestion) } }
+                reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
             }
         }
     }
