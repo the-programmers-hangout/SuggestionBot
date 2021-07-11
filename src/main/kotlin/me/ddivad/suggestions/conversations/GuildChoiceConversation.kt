@@ -6,7 +6,7 @@ import me.ddivad.suggestions.dataclasses.Configuration
 import me.ddivad.suggestions.dataclasses.Suggestion
 import me.ddivad.suggestions.services.SuggestionService
 import me.jakejmattson.discordkt.api.arguments.IntegerRangeArg
-import me.jakejmattson.discordkt.api.dsl.conversation
+import me.jakejmattson.discordkt.api.conversations.conversation
 import java.awt.Color
 
 fun guildChoiceConversation(

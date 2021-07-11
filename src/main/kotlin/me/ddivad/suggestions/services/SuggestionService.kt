@@ -58,17 +58,20 @@ class SuggestionService(private val configuration: Configuration, private val di
             SuggestionStatus.POSTED -> {
                 if (suggestion.publishedMessageId == null) {
                     val suggestionChannel = guild.getChannelOf<TextChannel>(guildConfiguration.suggestionChannel)
-                    suggestionChannel.createEmbed { createSuggestionEmbed(guild, suggestion) }.let {
+                    suggestionChannel.createEmbed { createSuggestionEmbed(guild, suggestion, guildConfiguration) }.let {
                         it.addReaction(Emojis.thumbsup.toReaction())
                         it.addReaction(Emojis.thumbdown.toReaction())
                         suggestion.addPublishMessageId(it.id)
                     }
                 }
+                if (guildConfiguration.showVotes) {
+                    suggestionMessage?.edit { this.embed { createSuggestionEmbed(guild, suggestion, guildConfiguration) } }
+                }
                 reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
             }
             in setOf(SuggestionStatus.UNDER_REVIEW, SuggestionStatus.IMPLEMENTED,SuggestionStatus.REJECTED) -> {
                 suggestionMessage?.deleteAllReactions()
-                suggestionMessage?.edit { this.embed { createSuggestionEmbed(guild, suggestion) } }
+                suggestionMessage?.edit { this.embed { createSuggestionEmbed(guild, suggestion, guildConfiguration) } }
                 reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
             }
         }

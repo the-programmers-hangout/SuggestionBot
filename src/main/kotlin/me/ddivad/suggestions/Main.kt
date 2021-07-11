@@ -14,14 +14,13 @@ import java.awt.Color
 @PrivilegedIntent
 suspend fun main() {
     val token = System.getenv("BOT_TOKEN") ?: null
-    val prefix = System.getenv("DEFAULT_PREFIX") ?: "s!"
 
     require(token != null) { "Expected the bot token as an environment variable" }
 
     bot(token) {
         prefix {
             val configuration = discord.getInjectionObjects(Configuration::class)
-            guild?.let { configuration[it.id]?.prefix } ?: prefix
+            configuration.prefix
         }
 
         configure {

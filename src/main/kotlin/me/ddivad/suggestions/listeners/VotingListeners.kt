@@ -11,11 +11,14 @@ fun onVotingReactionAdded(configuration: Configuration, suggestionService: Sugge
     on<ReactionAddEvent> {
         if (this.user == this.kord.getSelf()) return@on
         val guild = guild?.asGuildOrNull() ?: return@on
+        val guildConfiguration = configuration[guild.id] ?: return@on
         val suggestion = suggestionService.findSuggestionByMessageId(guild, messageId) ?: return@on
 
         when (this.emoji.name) {
             Emojis.thumbsup.unicode -> {
-                message.deleteReaction(userId, emoji)
+                if (guildConfiguration.removeVoteReactions) {
+                    message.deleteReaction(userId, emoji)
+                }
                 with(suggestionService) {
                     recordUpvote(guild, user.asUser(), messageId)
                     updateStatus(guild, suggestion, suggestion.status)
@@ -23,7 +26,9 @@ fun onVotingReactionAdded(configuration: Configuration, suggestionService: Sugge
             }
 
             Emojis.thumbdown.unicode -> {
-                message.deleteReaction(userId, emoji)
+                if (guildConfiguration.removeVoteReactions) {
+                    message.deleteReaction(userId, emoji)
+                }
                 with(suggestionService) {
                     recordDownvote(guild, user.asUser(), messageId)
                     updateStatus(guild, suggestion, suggestion.status)

@@ -4,13 +4,14 @@ import dev.kord.common.kColor
 import dev.kord.core.entity.Guild
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.Image
+import me.ddivad.suggestions.dataclasses.GuildConfiguration
 import me.ddivad.suggestions.dataclasses.Suggestion
 import me.ddivad.suggestions.dataclasses.SuggestionStatus
 import me.ddivad.suggestions.util.getVoteCounts
 import me.jakejmattson.discordkt.api.extensions.addField
 import java.awt.Color
 
-suspend fun EmbedBuilder.createSuggestionEmbed(guild: Guild, suggestion: Suggestion) {
+suspend fun EmbedBuilder.createSuggestionEmbed(guild: Guild, suggestion: Suggestion, config: GuildConfiguration) {
     val author = guild.kord.getUser(suggestion.author) ?: return
 
     author {
@@ -34,7 +35,7 @@ suspend fun EmbedBuilder.createSuggestionEmbed(guild: Guild, suggestion: Suggest
 
     val voteInfo = getVoteCounts(suggestion)
 
-    if (suggestion.status != SuggestionStatus.POSTED) {
+    if (config.showVotes || suggestion.status != SuggestionStatus.POSTED) {
         field {
             name = "Votes"
             value = """
@@ -45,7 +46,7 @@ suspend fun EmbedBuilder.createSuggestionEmbed(guild: Guild, suggestion: Suggest
         }
     }
 
-    if (suggestion.status == SuggestionStatus.POSTED) {
+    if (config.removeVoteReactions && suggestion.status == SuggestionStatus.POSTED) {
         field {
             value = "Note: reactions are removed after voting, but all votes are counted. Results will be made available later."
         }

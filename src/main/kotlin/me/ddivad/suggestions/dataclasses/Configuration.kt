@@ -8,14 +8,13 @@ import me.jakejmattson.discordkt.api.dsl.Data
 
 data class Configuration(
     val ownerId: String = "insert id here",
-    var prefix: String = "++",
+    var prefix: String = "s!",
     val guildConfigurations: MutableMap<Long, GuildConfiguration> = mutableMapOf()
 ) : Data("config/config.json") {
     fun hasGuildConfig(guildId: Snowflake) = guildConfigurations.containsKey(guildId.value)
     operator fun get(id: Snowflake) = guildConfigurations[id.value]
     fun setup(
         guild: Guild,
-        prefix: String,
         adminRole: Role,
         staffRole: Role,
         suggestionChannel: TextChannel,
@@ -25,7 +24,6 @@ data class Configuration(
 
         val newConfiguration = GuildConfiguration(
             guild.id.value,
-            prefix,
             staffRole.id,
             adminRole.id,
             suggestionChannel.id,
@@ -38,10 +36,11 @@ data class Configuration(
 
 data class GuildConfiguration(
     val id: Long? = null,
-    var prefix: String = "s!",
     var staffRoleId: Snowflake,
     var adminRoleId: Snowflake,
     var suggestionChannel: Snowflake,
     var suggestionReviewChannel: Snowflake,
     val suggestions: MutableList<Suggestion> = mutableListOf(),
+    var showVotes: Boolean = false,
+    var removeVoteReactions: Boolean = true
 )
