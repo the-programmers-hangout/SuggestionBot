@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-  starter:
+  suggestions:
     container_name: Suggestions
     build:
       dockerfile: Dockerfile
