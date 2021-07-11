@@ -5,6 +5,6 @@ RUN gradle shadowJar --no-daemon
 
 FROM openjdk:8-jre-slim
 RUN mkdir /config/
-COPY --from=build /starter/build/libs/*.jar /
+COPY --from=build /suggestions/build/libs/*.jar /
 
 ENTRYPOINT ["java", "-jar", "/Suggestions.jar"]
