@@ -1,6 +1,7 @@
 package me.ddivad.suggestions
 
 import dev.kord.common.kColor
+import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.PrivilegedIntent
 import me.ddivad.suggestions.dataclasses.Configuration
 import me.ddivad.suggestions.services.BotStatsService
@@ -27,6 +28,7 @@ suspend fun main() {
             allowMentionPrefix = true
             commandReaction = null
             theme = Color.MAGENTA
+            entitySupplyStrategy = EntitySupplyStrategy.cachingRest
         }
 
         mentionEmbed {
