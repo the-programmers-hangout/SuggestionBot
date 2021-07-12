@@ -1,5 +1,6 @@
 package me.ddivad.suggestions.services
 
+import dev.kord.common.entity.Permission
 import dev.kord.core.any
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Member
@@ -44,7 +45,7 @@ class PermissionsService(private val configuration: Configuration) {
     private fun Member.isBotOwner() = id.asString == configuration.ownerId
     private suspend fun Member.isGuildOwner() = isOwner()
     private suspend fun Member.isAdministrator() =
-        roles.any { it.id == configuration[guild.id]?.adminRoleId }
+        roles.any { it.id == configuration[guild.id]?.adminRoleId } || this.getPermissions().contains(Permission.Administrator)
 
     private suspend fun Member.isStaff() = roles.any { it.id == configuration[guild.id]?.staffRoleId }
 }

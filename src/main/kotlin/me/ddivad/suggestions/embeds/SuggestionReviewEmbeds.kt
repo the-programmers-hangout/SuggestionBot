@@ -1,5 +1,6 @@
 package me.ddivad.suggestions.embeds
 
+import dev.kord.common.annotation.KordPreview
 import dev.kord.common.kColor
 import dev.kord.core.entity.Guild
 import dev.kord.rest.Image
@@ -14,6 +15,7 @@ import me.jakejmattson.discordkt.api.dsl.MenuBuilder
 import me.jakejmattson.discordkt.api.extensions.addField
 import java.awt.Color
 
+@KordPreview
 suspend fun MenuBuilder.createSuggestionReviewMenu(discord: Discord, guild: Guild, suggestion: Suggestion) {
     val suggestionService = discord.getInjectionObjects(SuggestionService::class)
 
