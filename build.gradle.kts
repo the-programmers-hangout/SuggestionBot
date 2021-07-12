@@ -1,10 +1,10 @@
 group = "me.ddivad"
 version = Versions.BOT
-description = "discordKt starter template"
+description = "Bot to manage suggestions for a guild"
 
 plugins {
     kotlin("jvm") version "1.5.10"
-    id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
     id("com.github.ben-manes.versions") version "0.36.0"
 }
 

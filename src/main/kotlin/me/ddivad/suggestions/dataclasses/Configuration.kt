@@ -18,7 +18,10 @@ data class Configuration(
         adminRole: Role,
         staffRole: Role,
         suggestionChannel: TextChannel,
-        suggestionReviewChannel: TextChannel
+        suggestionReviewChannel: TextChannel,
+        showVotes: Boolean,
+        removeReactions: Boolean,
+        sendVotingDM: Boolean
     ) {
         if (guildConfigurations[guild.id.value] != null) return
 
@@ -27,7 +30,10 @@ data class Configuration(
             staffRole.id,
             adminRole.id,
             suggestionChannel.id,
-            suggestionReviewChannel.id
+            suggestionReviewChannel.id,
+            showVotes,
+            removeReactions,
+            sendVotingDM
         )
         guildConfigurations[guild.id.value] = newConfiguration
         save()
@@ -40,7 +46,8 @@ data class GuildConfiguration(
     var adminRoleId: Snowflake,
     var suggestionChannel: Snowflake,
     var suggestionReviewChannel: Snowflake,
+    var showVotes: Boolean,
+    var removeVoteReactions: Boolean,
+    var sendVotingDM: Boolean,
     val suggestions: MutableList<Suggestion> = mutableListOf(),
-    var showVotes: Boolean = false,
-    var removeVoteReactions: Boolean = true
 )

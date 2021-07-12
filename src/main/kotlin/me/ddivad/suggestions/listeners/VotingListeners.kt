@@ -3,8 +3,10 @@ package me.ddivad.suggestions.listeners
 import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.x.emoji.Emojis
 import me.ddivad.suggestions.dataclasses.Configuration
+import me.ddivad.suggestions.embeds.createVotingConfirmation
 import me.ddivad.suggestions.services.SuggestionService
 import me.jakejmattson.discordkt.api.dsl.listeners
+import me.jakejmattson.discordkt.api.extensions.sendPrivateMessage
 
 @Suppress("unused")
 fun onVotingReactionAdded(configuration: Configuration, suggestionService: SuggestionService) = listeners {
@@ -20,8 +22,12 @@ fun onVotingReactionAdded(configuration: Configuration, suggestionService: Sugge
                     message.deleteReaction(userId, emoji)
                 }
                 with(suggestionService) {
+                    if (hasUserVoted(userId, suggestion)) return@on
                     recordUpvote(guild, user.asUser(), messageId)
                     updateStatus(guild, suggestion, suggestion.status)
+                }
+                if (guildConfiguration.sendVotingDM) {
+                    user.sendPrivateMessage { createVotingConfirmation(guild, suggestion, guildConfiguration) }
                 }
             }
 
@@ -30,8 +36,12 @@ fun onVotingReactionAdded(configuration: Configuration, suggestionService: Sugge
                     message.deleteReaction(userId, emoji)
                 }
                 with(suggestionService) {
+                    if (hasUserVoted(userId, suggestion)) return@on
                     recordDownvote(guild, user.asUser(), messageId)
                     updateStatus(guild, suggestion, suggestion.status)
+                }
+                if (guildConfiguration.sendVotingDM) {
+                    user.sendPrivateMessage { createVotingConfirmation(guild, suggestion, guildConfiguration) }
                 }
             }
         }

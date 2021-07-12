@@ -32,7 +32,7 @@ class SuggestionService(private val configuration: Configuration, private val di
 
     fun recordUpvote(guild: Guild, user: User, messageId: Snowflake) {
         val suggestion = this.findSuggestionByMessageId(guild, messageId) ?: return
-        if (!suggestion.downvotes.contains(user.id) && !suggestion.upvotes.contains(user.id)) {
+        if (!hasUserVoted(user.id, suggestion)) {
             suggestion.upvotes.add(user.id)
         }
         configuration.save()
@@ -40,7 +40,7 @@ class SuggestionService(private val configuration: Configuration, private val di
 
     fun recordDownvote(guild: Guild, user: User, messageId: Snowflake) {
         val suggestion = this.findSuggestionByMessageId(guild, messageId) ?: return
-        if (!suggestion.upvotes.contains(user.id) && !suggestion.downvotes.contains(user.id)) {
+        if (!hasUserVoted(user.id, suggestion)) {
             suggestion.downvotes.add(user.id)
         }
         configuration.save()
@@ -103,5 +103,9 @@ class SuggestionService(private val configuration: Configuration, private val di
     fun findSuggestionById(guild: Guild, suggestionId: Int): Suggestion? {
         val guildConfiguration = configuration[guild.id] ?: return null
         return guildConfiguration.suggestions.find { it.id == suggestionId }
+    }
+
+    fun hasUserVoted(userId: Snowflake, suggestion: Suggestion): Boolean {
+        return suggestion.upvotes.contains(userId) || suggestion.downvotes.contains(userId)
     }
 }

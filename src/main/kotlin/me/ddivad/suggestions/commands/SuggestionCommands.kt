@@ -8,6 +8,7 @@ import me.ddivad.suggestions.dataclasses.SuggestionStatus
 import me.ddivad.suggestions.services.PermissionLevel
 import me.ddivad.suggestions.services.SuggestionService
 import me.ddivad.suggestions.services.requiredPermissionLevel
+import me.jakejmattson.discordkt.api.arguments.ChoiceArg
 import me.jakejmattson.discordkt.api.arguments.EveryArg
 import me.jakejmattson.discordkt.api.arguments.IntegerArg
 import me.jakejmattson.discordkt.api.dsl.commands
@@ -45,23 +46,42 @@ fun suggestionCommands(configuration: Configuration, suggestionService: Suggesti
         }
     }
 
-    guildCommand("progress") {
-        execute(IntegerArg("Suggestion Id")) {
-            val suggestion = suggestionService.findSuggestionById(guild, args.first)
+    guildCommand("setStatus") {
+        description = "Set the status for a suggestion (backup for interaction buttons)"
+        requiredPermissionLevel = PermissionLevel.Administrator
+        execute(IntegerArg("Suggestion ID"), ChoiceArg("Status", "accepted",  "rejected", "review", "implemented")) {
+            val (id, status) = args
+            val suggestion = suggestionService.findSuggestionById(guild, id)
             if (suggestion != null) {
-                when (suggestion.status) {
-                    SuggestionStatus.NEW -> suggestionService.updateStatus(guild, suggestion, SuggestionStatus.POSTED)
-                    SuggestionStatus.POSTED -> suggestionService.updateStatus(
-                        guild,
-                        suggestion,
-                        SuggestionStatus.UNDER_REVIEW
-                    )
-                    SuggestionStatus.UNDER_REVIEW -> suggestionService.updateStatus(
-                        guild,
-                        suggestion,
-                        SuggestionStatus.IMPLEMENTED
-                    )
-                    else -> suggestionService.updateStatus(guild, suggestion, SuggestionStatus.NEW)
+                when (status.toLowerCase()) {
+                    "accepted" -> {
+                        suggestionService.updateStatus(
+                            guild,
+                            suggestion,
+                            SuggestionStatus.POSTED
+                        )
+                    }
+                    "review" -> {
+                        suggestionService.updateStatus(
+                            guild,
+                            suggestion,
+                            SuggestionStatus.UNDER_REVIEW
+                        )
+                    }
+                    "implemented" -> {
+                        suggestionService.updateStatus(
+                            guild,
+                            suggestion,
+                            SuggestionStatus.IMPLEMENTED
+                        )
+                    }
+                    "rejected" -> {
+                        suggestionService.updateStatus(
+                            guild,
+                            suggestion,
+                            SuggestionStatus.REJECTED
+                        )
+                    }
                 }
             }
         }

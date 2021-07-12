@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   suggestions:
-    container_name: Suggestions
+    container_name: suggestionbot
     build:
       dockerfile: Dockerfile
       context: .

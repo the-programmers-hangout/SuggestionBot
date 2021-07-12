@@ -1,16 +1,16 @@
 package me.ddivad.suggestions.commands
 
+import dev.kord.core.entity.channel.TextChannel
 import me.ddivad.suggestions.conversations.ConfigurationConversation
 import me.ddivad.suggestions.dataclasses.Configuration
+import me.ddivad.suggestions.embeds.createConfigurationEmbed
 import me.ddivad.suggestions.services.PermissionLevel
 import me.ddivad.suggestions.services.requiredPermissionLevel
-import me.jakejmattson.discordkt.api.arguments.BooleanArg
-import me.jakejmattson.discordkt.api.arguments.EveryArg
-import me.jakejmattson.discordkt.api.arguments.RoleArg
+import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
 
 @Suppress("unused")
-fun guildConfigCommands(configuration: Configuration) = commands("Configuration") {
+fun guildConfigCommands(configuration: Configuration) = commands("Setup") {
     guildCommand("setup") {
         description = "Configure a guild to use this bot."
         requiredPermissionLevel = PermissionLevel.Administrator
@@ -22,7 +22,8 @@ fun guildConfigCommands(configuration: Configuration) = commands("Configuration"
             ConfigurationConversation(configuration)
                     .createConfigurationConversation(guild)
                     .startPublicly(discord, author, channel)
-            respond("${guild.name} setup")
+            respond("${guild.name} setup with the following configuration:")
+            respond { configuration[guild.id]?.let { createConfigurationEmbed(guild, it) } }
         }
     }
 
@@ -56,31 +57,35 @@ fun guildConfigCommands(configuration: Configuration) = commands("Configuration"
         }
     }
 
-    guildCommand("toggleShowVotes") {
-        description = "Toggle votes being displayed on in-progress suggestions."
+    guildCommand("setChannel") {
+        description = "Set the review or public channel to be used for suggestions."
         requiredPermissionLevel = PermissionLevel.Administrator
-        execute {
+        execute(ChoiceArg("Channel", "public", "review"), ChannelArg<TextChannel>("Channel")) {
             if (!configuration.hasGuildConfig(guild.id)) {
                 respond("Please run the **configure** command to set this initially.")
                 return@execute
             }
-            val guildConfig = configuration[guild.id] ?: return@execute
-            guildConfig.showVotes = !guildConfig.showVotes
-            respond("Toggled displaying votes ${if (guildConfig.showVotes) "**On**" else "**Off**"}")
+            val (option, channel) = args
+            val config = configuration[guild.id]
+            when(option.toLowerCase()) {
+                "public" -> {
+                    config?.suggestionChannel = channel.id
+                }
+                "review" -> {
+                    config?.suggestionReviewChannel = channel.id
+                }
+            }
+            configuration.save()
+            respond("Set the **$option** channel to ${channel.mention}")
         }
     }
 
-    guildCommand("toggleRemoveReactions") {
-        description = "Toggle reactions being removed on in-progress suggestions."
-        requiredPermissionLevel = PermissionLevel.Administrator
+    guildCommand("configuration") {
+        description = "Set the review or public channel to be used for suggestions."
+        requiredPermissionLevel = PermissionLevel.Staff
         execute {
-            if (!configuration.hasGuildConfig(guild.id)) {
-                respond("Please run the **configure** command to set this initially.")
-                return@execute
-            }
-            val guildConfig = configuration[guild.id] ?: return@execute
-            guildConfig.removeVoteReactions = !guildConfig.removeVoteReactions
-            respond("Toggled removing reactions ${if (guildConfig.removeVoteReactions) "**On**" else "**Off**"}")
+            val config = configuration[guild.id] ?: return@execute
+            respond {createConfigurationEmbed(guild, config)}
         }
     }
 }
