@@ -1,5 +1,6 @@
 package me.ddivad.suggestions.services
 
+import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.edit
@@ -18,6 +19,7 @@ import me.jakejmattson.discordkt.api.Discord
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.extensions.createMenu
 
+@KordPreview
 @Service
 class SuggestionService(private val configuration: Configuration, private val discord: Discord) {
     suspend fun addSuggestion(guild: Guild, suggestion: Suggestion) {
@@ -107,5 +109,14 @@ class SuggestionService(private val configuration: Configuration, private val di
 
     fun hasUserVoted(userId: Snowflake, suggestion: Suggestion): Boolean {
         return suggestion.upvotes.contains(userId) || suggestion.downvotes.contains(userId)
+    }
+
+    suspend fun resetSuggestionInteractions(guild: Guild, suggestion: Suggestion): Snowflake? {
+        val guildConfiguration = configuration[guild.id]
+        val reviewChannel = guild.getChannelOf<TextChannel>(guildConfiguration!!.suggestionReviewChannel)
+        getReviewMessage(guild, suggestion.reviewMessageId)?.delete()
+        return reviewChannel.createMenu { createSuggestionReviewMenu(discord, guild, suggestion) }.let {
+            return@let it?.id
+        }
     }
 }

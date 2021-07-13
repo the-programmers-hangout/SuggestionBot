@@ -4,10 +4,7 @@ import dev.kord.common.kColor
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.PrivilegedIntent
 import me.ddivad.suggestions.dataclasses.Configuration
-import me.ddivad.suggestions.services.BotStatsService
-import me.ddivad.suggestions.services.PermissionLevel
-import me.ddivad.suggestions.services.PermissionsService
-import me.ddivad.suggestions.services.requiredPermissionLevel
+import me.ddivad.suggestions.services.*
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.jakejmattson.discordkt.api.extensions.addInlineField
 import java.awt.Color
@@ -28,7 +25,7 @@ suspend fun main() {
             allowMentionPrefix = true
             commandReaction = null
             theme = Color.MAGENTA
-            entitySupplyStrategy = EntitySupplyStrategy.cachingRest
+            entitySupplyStrategy = EntitySupplyStrategy.cacheWithCachingRestFallback
         }
 
         mentionEmbed {
@@ -82,6 +79,20 @@ suspend fun main() {
 
         presence {
             playing("s!suggest")
+        }
+
+        onStart {
+            val (cacheService, interactionUpdateService) = this.getInjectionObjects(
+                CacheService::class,
+                InteractionUpdateService::class
+            )
+            try {
+                cacheService.run()
+            } catch (ex: Exception) {
+                println(ex.message)
+            }
+            interactionUpdateService.run()
+
         }
     }
 }
