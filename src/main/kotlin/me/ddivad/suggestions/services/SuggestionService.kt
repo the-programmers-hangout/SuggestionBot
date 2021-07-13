@@ -51,7 +51,6 @@ class SuggestionService(private val configuration: Configuration, private val di
     suspend fun updateStatus(guild: Guild, suggestion: Suggestion, status: SuggestionStatus) {
         val guildConfiguration = configuration[guild.id] ?: return
         suggestion.status = status
-        configuration.save()
 
         val reviewMessage = this.getReviewMessage(guild, suggestion.reviewMessageId)
         val suggestionMessage = this.getPublishedMessage(guild, suggestion.publishedMessageId)
@@ -77,6 +76,7 @@ class SuggestionService(private val configuration: Configuration, private val di
                 reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
             }
         }
+        configuration.save()
     }
 
     private suspend fun getReviewMessage(guild: Guild, messageId: Snowflake?): Message? {

@@ -1,14 +1,13 @@
 package me.ddivad.suggestions.commands
 
 import me.ddivad.suggestions.dataclasses.Configuration
-import me.ddivad.suggestions.services.PermissionLevel
-import me.ddivad.suggestions.services.requiredPermissionLevel
+import me.ddivad.suggestions.dataclasses.Permissions
 import me.jakejmattson.discordkt.api.dsl.commands
 
 fun configurationCommands(configuration: Configuration) = commands("Configuration") {
     guildCommand("toggleShowVotes") {
         description = "Toggle votes being displayed on in-progress suggestions."
-        requiredPermissionLevel = PermissionLevel.Administrator
+        requiredPermission = Permissions.ADMINISTRATOR
         execute {
             if (!configuration.hasGuildConfig(guild.id)) {
                 respond("Please run the **configure** command to set this initially.")
@@ -22,7 +21,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
     guildCommand("toggleRemoveReactions") {
         description = "Toggle reactions being removed on in-progress suggestions."
-        requiredPermissionLevel = PermissionLevel.Administrator
+        requiredPermission = Permissions.ADMINISTRATOR
         execute {
             if (!configuration.hasGuildConfig(guild.id)) {
                 respond("Please run the **configure** command to set this initially.")
@@ -36,7 +35,7 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
 
     guildCommand("toggleVotingDM") {
         description = "Toggle DMs being sent upon voting for a suggestions."
-        requiredPermissionLevel = PermissionLevel.Administrator
+        requiredPermission = Permissions.ADMINISTRATOR
         execute {
             if (!configuration.hasGuildConfig(guild.id)) {
                 respond("Please run the **configure** command to set this initially.")

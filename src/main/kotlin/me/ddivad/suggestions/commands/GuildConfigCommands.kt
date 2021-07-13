@@ -3,9 +3,8 @@ package me.ddivad.suggestions.commands
 import dev.kord.core.entity.channel.TextChannel
 import me.ddivad.suggestions.conversations.ConfigurationConversation
 import me.ddivad.suggestions.dataclasses.Configuration
+import me.ddivad.suggestions.dataclasses.Permissions
 import me.ddivad.suggestions.embeds.createConfigurationEmbed
-import me.ddivad.suggestions.services.PermissionLevel
-import me.ddivad.suggestions.services.requiredPermissionLevel
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
 
@@ -13,7 +12,7 @@ import me.jakejmattson.discordkt.api.dsl.commands
 fun guildConfigCommands(configuration: Configuration) = commands("Setup") {
     guildCommand("setup") {
         description = "Configure a guild to use this bot."
-        requiredPermissionLevel = PermissionLevel.Administrator
+        requiredPermission = Permissions.ADMINISTRATOR
         execute {
             if (configuration.hasGuildConfig(guild.id)) {
                 respond("Guild configuration exists. To modify it use the commands to set values.")
@@ -29,7 +28,7 @@ fun guildConfigCommands(configuration: Configuration) = commands("Setup") {
 
     guildCommand("setstaffrole") {
         description = "Set the bot staff role."
-        requiredPermissionLevel = PermissionLevel.Administrator
+        requiredPermission = Permissions.ADMINISTRATOR
         execute(RoleArg) {
             if (!configuration.hasGuildConfig(guild.id)) {
                 respond("Please run the **configure** command to set this initially.")
@@ -44,7 +43,7 @@ fun guildConfigCommands(configuration: Configuration) = commands("Setup") {
 
     guildCommand("setadminrole") {
         description = "Set the bot admin role."
-        requiredPermissionLevel = PermissionLevel.Administrator
+        requiredPermission = Permissions.ADMINISTRATOR
         execute(RoleArg) {
             if (!configuration.hasGuildConfig(guild.id)) {
                 respond("Please run the **configure** command to set this initially.")
@@ -59,7 +58,7 @@ fun guildConfigCommands(configuration: Configuration) = commands("Setup") {
 
     guildCommand("setChannel") {
         description = "Set the review or public channel to be used for suggestions."
-        requiredPermissionLevel = PermissionLevel.Administrator
+        requiredPermission = Permissions.ADMINISTRATOR
         execute(ChoiceArg("Channel", "public", "review"), ChannelArg<TextChannel>("Channel")) {
             if (!configuration.hasGuildConfig(guild.id)) {
                 respond("Please run the **configure** command to set this initially.")
@@ -82,7 +81,7 @@ fun guildConfigCommands(configuration: Configuration) = commands("Setup") {
 
     guildCommand("configuration") {
         description = "Set the review or public channel to be used for suggestions."
-        requiredPermissionLevel = PermissionLevel.Staff
+        requiredPermission = Permissions.STAFF
         execute {
             val config = configuration[guild.id] ?: return@execute
             respond {createConfigurationEmbed(guild, config)}

@@ -1,5 +1,6 @@
 package me.ddivad.suggestions.listeners
 
+import dev.kord.common.annotation.KordPreview
 import dev.kord.core.event.message.ReactionAddEvent
 import dev.kord.x.emoji.Emojis
 import me.ddivad.suggestions.dataclasses.Configuration
@@ -8,6 +9,7 @@ import me.ddivad.suggestions.services.SuggestionService
 import me.jakejmattson.discordkt.api.dsl.listeners
 import me.jakejmattson.discordkt.api.extensions.sendPrivateMessage
 
+@KordPreview
 @Suppress("unused")
 fun onVotingReactionAdded(configuration: Configuration, suggestionService: SuggestionService) = listeners {
     on<ReactionAddEvent> {

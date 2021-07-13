@@ -73,7 +73,7 @@ suspend fun EmbedBuilder.createSuggestionReviewEmbed(guild: Guild, suggestion: S
         field {
             name = "Votes"
             value = """
-                Opinion: ${voteInfo.upVotes - voteInfo.downVotes}
+                Opinion: ${voteInfo.opinion}
                 Upvotes: ${voteInfo.upVotes} `${voteInfo.upvotePercentage} %`
                 Downvotes: ${voteInfo.downVotes} ` ${voteInfo.downVotePercentage} %`
             """.trimIndent()

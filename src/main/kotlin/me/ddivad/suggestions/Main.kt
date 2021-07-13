@@ -4,6 +4,7 @@ import dev.kord.common.kColor
 import dev.kord.core.supplier.EntitySupplyStrategy
 import dev.kord.gateway.PrivilegedIntent
 import me.ddivad.suggestions.dataclasses.Configuration
+import me.ddivad.suggestions.dataclasses.Permissions
 import me.ddivad.suggestions.services.*
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.jakejmattson.discordkt.api.extensions.addInlineField
@@ -26,6 +27,7 @@ suspend fun main() {
             commandReaction = null
             theme = Color.MAGENTA
             entitySupplyStrategy = EntitySupplyStrategy.cacheWithCachingRestFallback
+            permissions(Permissions.NONE)
         }
 
         mentionEmbed {
@@ -68,15 +70,6 @@ suspend fun main() {
             }
         }
 
-        permissions {
-            if (guild != null) {
-                val member = user.asMember(guild!!.id)
-                val permission = command.requiredPermissionLevel
-                val permissionsService = discord.getInjectionObjects(PermissionsService::class)
-                return@permissions permissionsService.hasClearance(guild, member, permission)
-            } else return@permissions command.requiredPermissionLevel == PermissionLevel.Everyone
-        }
-
         presence {
             playing("s!suggest")
         }
@@ -88,11 +81,10 @@ suspend fun main() {
             )
             try {
                 cacheService.run()
+                interactionUpdateService.run()
             } catch (ex: Exception) {
                 println(ex.message)
             }
-            interactionUpdateService.run()
-
         }
     }
 }
