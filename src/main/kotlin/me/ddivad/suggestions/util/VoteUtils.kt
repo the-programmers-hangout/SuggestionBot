@@ -6,8 +6,8 @@ data class Vote(
     val opinion: Int,
     val upVotes: Int,
     val downVotes: Int,
-    val upvotePercentage: Int,
-    val downVotePercentage: Int
+    val upvotePercentage: Double,
+    val downVotePercentage: Double
 )
 
 fun getVoteCounts(suggestion: Suggestion): Vote {
@@ -15,8 +15,8 @@ fun getVoteCounts(suggestion: Suggestion): Vote {
     val downVotes = suggestion.downvotes.size
     val totalVotes = upVotes + downVotes
 
-    val upVotePercentage = if(totalVotes > 0) upVotes / totalVotes * 100 else 0
-    val downVotePercentage = if(totalVotes > 0) downVotes / totalVotes * 100 else 0
+    val upVotePercentage = if(totalVotes > 0) upVotes.toDouble() / totalVotes.toDouble() * 100 else 0.0
+    val downVotePercentage = if(totalVotes > 0) downVotes.toDouble() / totalVotes.toDouble() * 100 else 0.0
 
     return Vote(
         upVotes - downVotes,
