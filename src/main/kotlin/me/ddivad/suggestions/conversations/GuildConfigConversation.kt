@@ -13,6 +13,7 @@ class ConfigurationConversation(private val configuration: Configuration) {
     fun createConfigurationConversation(guild: Guild) = conversation {
         val adminRole = promptMessage(RoleArg, "Admin role:")
         val staffRole = promptMessage(RoleArg, "Staff role:")
+        val requiredSuggestionRole = promptMessage(RoleArg, "Required suggestion role:")
         val suggestionChannel = promptMessage(ChannelArg, "Suggestion channel:")
         val suggestionReviewChannel = promptMessage(ChannelArg, "Suggestion Review Channel:")
 
@@ -67,6 +68,16 @@ class ConfigurationConversation(private val configuration: Configuration) {
             }
         }
 
-        configuration.setup(guild, adminRole, staffRole, suggestionChannel, suggestionReviewChannel, showVotes, removeReactions, sendDM)
+        configuration.setup(
+            guild,
+            adminRole,
+            staffRole,
+            requiredSuggestionRole,
+            suggestionChannel,
+            suggestionReviewChannel,
+            showVotes,
+            removeReactions,
+            sendDM
+        )
     }
 }

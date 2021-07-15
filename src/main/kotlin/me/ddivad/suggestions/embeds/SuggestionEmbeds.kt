@@ -24,7 +24,7 @@ suspend fun EmbedBuilder.createSuggestionEmbed(guild: Guild, suggestion: Suggest
     }
     color = when (suggestion.status) {
         SuggestionStatus.NEW -> Color.GREEN.kColor
-        SuggestionStatus.POSTED -> Color.YELLOW.kColor
+        SuggestionStatus.PUBLISHED -> Color.YELLOW.kColor
         SuggestionStatus.UNDER_REVIEW -> Color.GREEN.kColor
         SuggestionStatus.IMPLEMENTED -> Color.MAGENTA.kColor
         SuggestionStatus.REJECTED -> Color.RED.kColor
@@ -35,18 +35,18 @@ suspend fun EmbedBuilder.createSuggestionEmbed(guild: Guild, suggestion: Suggest
 
     val voteInfo = getVoteCounts(suggestion)
 
-    if (config.showVotes || suggestion.status != SuggestionStatus.POSTED) {
+    if (config.showVotes || suggestion.status != SuggestionStatus.PUBLISHED) {
         field {
             name = "Votes"
             value = """
                 Opinion: ${voteInfo.opinion}
-                Upvotes: ${voteInfo.upVotes} `${voteInfo.upvotePercentage} %`
-                Downvotes: ${voteInfo.downVotes} ` ${voteInfo.downVotePercentage} %`
+                Upvotes: ${voteInfo.upVotes} `${voteInfo.upvotePercentage}%`
+                Downvotes: ${voteInfo.downVotes} `${voteInfo.downVotePercentage}%`
             """.trimIndent()
         }
     }
 
-    if (config.removeVoteReactions && suggestion.status == SuggestionStatus.POSTED) {
+    if (config.removeVoteReactions && suggestion.status == SuggestionStatus.PUBLISHED) {
         field {
             value = "Note: reactions are removed after voting, but all votes are counted. Results will be made available later."
         }

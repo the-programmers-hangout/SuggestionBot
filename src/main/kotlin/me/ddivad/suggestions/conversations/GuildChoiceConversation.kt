@@ -31,9 +31,12 @@ fun guildChoiceConversation(
 
     val guild = guilds[guildIndex]
     val guildConfiguration = configuration[guild.id] ?: return@conversation
-    val nextId: Int =
-        if (guildConfiguration.suggestions.isEmpty()) 1 else guildConfiguration.suggestions.maxByOrNull { it.id }!!.id + 1
-    val suggestion = Suggestion(user.id, suggestionMessage, id = nextId)
-    suggestionService.addSuggestion(guild, suggestion)
-    respond("Suggestion added to the pool. If accepted, it will appear in ${guild.getChannel(guildConfiguration.suggestionChannel).mention}")
+
+    if (user.asMember(guild.id).roleIds.contains(guildConfiguration.requiredSuggestionRole)) {
+        val nextId: Int =
+            if (guildConfiguration.suggestions.isEmpty()) 1 else guildConfiguration.suggestions.maxByOrNull { it.id }!!.id + 1
+        val suggestion = Suggestion(user.id, suggestionMessage, id = nextId)
+        suggestionService.addSuggestion(guild, suggestion)
+        respond("Suggestion added to the pool. If accepted, it will appear in ${guild.getChannel(guildConfiguration.suggestionChannel).mention}")
+    } else respond("Sorry, you don't meet the role requirements to post a suggestion.")
 }

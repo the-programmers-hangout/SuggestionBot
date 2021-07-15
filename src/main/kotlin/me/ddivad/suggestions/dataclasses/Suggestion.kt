@@ -3,14 +3,14 @@ package me.ddivad.suggestions.dataclasses
 import dev.kord.common.entity.Snowflake
 
 enum class SuggestionStatus {
-    NEW, POSTED, UNDER_REVIEW, IMPLEMENTED, REJECTED
+    NEW, PUBLISHED, UNDER_REVIEW, IMPLEMENTED, REJECTED
 }
 
 data class Suggestion(
     val author: Snowflake,
     val suggestion: String,
-    val upvotes: MutableList<Snowflake> = mutableListOf(),
-    val downvotes: MutableList<Snowflake> = mutableListOf(),
+    var upvotes: MutableList<Snowflake> = mutableListOf(),
+    var downvotes: MutableList<Snowflake> = mutableListOf(),
     var status: SuggestionStatus = SuggestionStatus.NEW,
     var id: Int = 0,
     var publishedMessageId: Snowflake? = null,
@@ -22,5 +22,12 @@ data class Suggestion(
 
     fun addPublishMessageId(messageId: Snowflake) {
         this.publishedMessageId = messageId
+    }
+
+    fun reset() {
+        this.upvotes = mutableListOf()
+        this.downvotes = mutableListOf()
+        this.publishedMessageId = null
+        this.status = SuggestionStatus.NEW
     }
 }

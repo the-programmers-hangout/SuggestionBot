@@ -13,13 +13,14 @@
 | toggleVotingDM        |           | Toggle DMs being sent upon voting for a suggestions.       |
 
 ## Setup
-| Commands      | Arguments        | Description                                                  |
-| ------------- | ---------------- | ------------------------------------------------------------ |
-| configuration |                  | Set the review or public channel to be used for suggestions. |
-| setChannel    | Channel, Channel | Set the review or public channel to be used for suggestions. |
-| setadminrole  | Role             | Set the bot admin role.                                      |
-| setstaffrole  | Role             | Set the bot staff role.                                      |
-| setup         |                  | Configure a guild to use this bot.                           |
+| Commands         | Arguments        | Description                                                  |
+| ---------------- | ---------------- | ------------------------------------------------------------ |
+| configuration    |                  | Set the review or public channel to be used for suggestions. |
+| setChannel       | Channel, Channel | Set the review or public channel to be used for suggestions. |
+| setadminrole     | Role             | Set the bot admin role.                                      |
+| setstaffrole     | Role             | Set the bot staff role.                                      |
+| setsuggstionrole | Role             | Set the minimum required role to make a suggestion.          |
+| setup            |                  | Configure a guild to use this bot.                           |
 
 ## Suggestions
 | Commands  | Arguments             | Description                                                      |

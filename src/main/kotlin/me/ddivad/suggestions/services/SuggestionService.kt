@@ -34,7 +34,8 @@ class SuggestionService(private val configuration: Configuration, private val di
 
     fun recordUpvote(guild: Guild, user: User, messageId: Snowflake) {
         val suggestion = this.findSuggestionByMessageId(guild, messageId) ?: return
-        if (!hasUserVoted(user.id, suggestion)) {
+        suggestion.downvotes.removeIf { it == user.id }
+        if (user.id !in suggestion.upvotes) {
             suggestion.upvotes.add(user.id)
         }
         configuration.save()
@@ -42,7 +43,8 @@ class SuggestionService(private val configuration: Configuration, private val di
 
     fun recordDownvote(guild: Guild, user: User, messageId: Snowflake) {
         val suggestion = this.findSuggestionByMessageId(guild, messageId) ?: return
-        if (!hasUserVoted(user.id, suggestion)) {
+        suggestion.upvotes.removeIf { it == user.id }
+        if (user.id !in suggestion.downvotes) {
             suggestion.downvotes.add(user.id)
         }
         configuration.save()
@@ -56,7 +58,7 @@ class SuggestionService(private val configuration: Configuration, private val di
         val suggestionMessage = this.getPublishedMessage(guild, suggestion.publishedMessageId)
 
         when (suggestion.status) {
-            SuggestionStatus.POSTED -> {
+            SuggestionStatus.PUBLISHED -> {
                 if (suggestion.publishedMessageId == null) {
                     val suggestionChannel = guild.getChannelOf<TextChannel>(guildConfiguration.suggestionChannel)
                     suggestionChannel.createEmbed { createSuggestionEmbed(guild, suggestion, guildConfiguration) }.let {
@@ -77,6 +79,17 @@ class SuggestionService(private val configuration: Configuration, private val di
             }
         }
         configuration.save()
+    }
+
+    suspend fun resetVotes(guild: Guild, suggestion: Suggestion) {
+        val reviewMessage = this.getReviewMessage(guild, suggestion.reviewMessageId)
+        val suggestionMessage = this.getPublishedMessage(guild, suggestion.publishedMessageId)
+        with(configuration) {
+            suggestionMessage?.delete()
+            suggestion.reset()
+            save()
+        }
+        reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
     }
 
     private suspend fun getReviewMessage(guild: Guild, messageId: Snowflake?): Message? {
@@ -105,10 +118,6 @@ class SuggestionService(private val configuration: Configuration, private val di
     fun findSuggestionById(guild: Guild, suggestionId: Int): Suggestion? {
         val guildConfiguration = configuration[guild.id] ?: return null
         return guildConfiguration.suggestions.find { it.id == suggestionId }
-    }
-
-    fun hasUserVoted(userId: Snowflake, suggestion: Suggestion): Boolean {
-        return suggestion.upvotes.contains(userId) || suggestion.downvotes.contains(userId)
     }
 
     suspend fun resetSuggestionInteractions(guild: Guild, suggestion: Suggestion): Snowflake? {

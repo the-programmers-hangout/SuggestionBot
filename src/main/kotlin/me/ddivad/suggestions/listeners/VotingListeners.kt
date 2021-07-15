@@ -24,12 +24,11 @@ fun onVotingReactionAdded(configuration: Configuration, suggestionService: Sugge
                     message.deleteReaction(userId, emoji)
                 }
                 with(suggestionService) {
-                    if (hasUserVoted(userId, suggestion)) return@on
                     recordUpvote(guild, user.asUser(), messageId)
                     updateStatus(guild, suggestion, suggestion.status)
                 }
                 if (guildConfiguration.sendVotingDM) {
-                    user.sendPrivateMessage { createVotingConfirmation(guild, suggestion, guildConfiguration) }
+                    user.sendPrivateMessage { createVotingConfirmation(guild, suggestion, guildConfiguration, emoji) }
                 }
             }
 
@@ -38,12 +37,11 @@ fun onVotingReactionAdded(configuration: Configuration, suggestionService: Sugge
                     message.deleteReaction(userId, emoji)
                 }
                 with(suggestionService) {
-                    if (hasUserVoted(userId, suggestion)) return@on
                     recordDownvote(guild, user.asUser(), messageId)
                     updateStatus(guild, suggestion, suggestion.status)
                 }
                 if (guildConfiguration.sendVotingDM) {
-                    user.sendPrivateMessage { createVotingConfirmation(guild, suggestion, guildConfiguration) }
+                    user.sendPrivateMessage { createVotingConfirmation(guild, suggestion, guildConfiguration, emoji) }
                 }
             }
         }

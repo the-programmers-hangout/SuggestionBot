@@ -47,26 +47,32 @@ suspend fun main() {
             }
 
             addInlineField("Prefix", "`${it.prefix()}`")
-            addInlineField("Contributors", "ddivad#0001")
+            addInlineField("Contributors", "[Link](https://github.com/the-programmers-hangout/JudgeBot/graphs/contributors)")
 
             val kotlinVersion = KotlinVersion.CURRENT
             val versions = it.discord.versions
             field {
                 name = "Build Info"
                 value = "```" +
-                        "Version:   1.1.1\n" +
+                        "Version:   1.2.0\n" +
                         "DiscordKt: ${versions.library}\n" +
-                        "Kotlin:    $kotlinVersion" +
+                        "Kotlin:    $kotlinVersion\n" +
+                        "Kord:      ${versions.kord}\n" +
                         "```"
-            }
-
-            field {
-                name = "Uptime"
-                value = botStats.uptime
             }
             field {
                 name = "Ping"
                 value = botStats.ping
+                inline = true
+            }
+            field {
+                name = "Source"
+                value = "[Github](https://github.com/the-programmers-hangout/SuggestionBot)"
+                inline = true
+            }
+            field {
+                name = "Uptime"
+                value = botStats.uptime
             }
         }
 

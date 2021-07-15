@@ -2,9 +2,7 @@ version: '3.7'
 services:
   suggestions:
     container_name: suggestionbot
-    build:
-      dockerfile: Dockerfile
-      context: .
+    image: theprogrammershangout/suggestionbot:latest
     volumes:
       - type: bind
         source: ./config/config.json
