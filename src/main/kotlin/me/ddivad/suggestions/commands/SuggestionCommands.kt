@@ -25,6 +25,7 @@ fun suggestionCommands(configuration: Configuration, suggestionService: Suggesti
                     if (guildConfiguration.suggestions.isEmpty()) 1 else guildConfiguration.suggestions.maxByOrNull { it.id }!!.id + 1
                 val suggestion = Suggestion(author.id, args.first, id = nextId)
                 suggestionService.addSuggestion(guild!!, suggestion)
+                respond("Suggestion added to the pool. If accepted, it will appear in ${guild!!.getChannel(guildConfiguration.suggestionChannel).mention}")
             } else {
                 val mutualGuilds = author.mutualGuilds.toList().filter { configuration[it.id] != null }
                 when {
@@ -39,6 +40,7 @@ fun suggestionCommands(configuration: Configuration, suggestionService: Suggesti
                             if (guildConfiguration.suggestions.isEmpty()) 1 else guildConfiguration.suggestions.maxByOrNull { it.id }!!.id + 1
                         val suggestion = Suggestion(author.id, args.first, id = nextId)
                         suggestionService.addSuggestion(guild, suggestion)
+                        respond("Suggestion added to the pool. If accepted, it will appear in ${guild!!.getChannel(guildConfiguration.suggestionChannel).mention}")
                     }
                 }
             }
