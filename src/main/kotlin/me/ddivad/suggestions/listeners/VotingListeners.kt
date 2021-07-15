@@ -23,6 +23,7 @@ fun onVotingReactionAdded(configuration: Configuration, suggestionService: Sugge
                 if (guildConfiguration.removeVoteReactions) {
                     message.deleteReaction(userId, emoji)
                 }
+                if (user.id in suggestion.upvotes) return@on
                 with(suggestionService) {
                     recordUpvote(guild, user.asUser(), messageId)
                     updateStatus(guild, suggestion, suggestion.status)
@@ -36,6 +37,7 @@ fun onVotingReactionAdded(configuration: Configuration, suggestionService: Sugge
                 if (guildConfiguration.removeVoteReactions) {
                     message.deleteReaction(userId, emoji)
                 }
+                if (user.id in suggestion.downvotes) return@on
                 with(suggestionService) {
                     recordDownvote(guild, user.asUser(), messageId)
                     updateStatus(guild, suggestion, suggestion.status)
