@@ -2,6 +2,8 @@ package me.ddivad.suggestions.embeds
 
 import dev.kord.common.annotation.KordPreview
 import dev.kord.common.kColor
+import dev.kord.core.behavior.interaction.acknowledgeEphemeralUpdateMessage
+import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.entity.Guild
 import dev.kord.rest.Image
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -26,28 +28,44 @@ suspend fun MenuBuilder.createSuggestionReviewMenu(discord: Discord, guild: Guil
     buttons {
         actionButton("Publish", Emojis.thumbsup) {
             val suggestion = suggestionService.findSuggestionByMessageId(guild, this.message!!.id) ?: return@actionButton
+            if (suggestion.status == SuggestionStatus.PUBLISHED) {
+                respondEphemeral { content = "Suggestion is already Published" }
+                return@actionButton
+            }
             suggestionService.updateStatus(guild, suggestion, SuggestionStatus.PUBLISHED)
-            this.acknowledgeEphemeralDeferredMessageUpdate()
+            acknowledgeEphemeralDeferredMessageUpdate()
         }
         actionButton("Reject", Emojis.thumbdown) {
             val suggestion = suggestionService.findSuggestionByMessageId(guild, this.message!!.id) ?: return@actionButton
+            if (suggestion.status == SuggestionStatus.REJECTED) {
+                respondEphemeral { content = "Suggestion is already Rejected" }
+                return@actionButton
+            }
             suggestionService.updateStatus(guild, suggestion, SuggestionStatus.REJECTED)
-            this.acknowledgeEphemeralDeferredMessageUpdate()
+            acknowledgeEphemeralDeferredMessageUpdate()
         }
         actionButton("Under Review", Emojis.informationSource) {
             val suggestion = suggestionService.findSuggestionByMessageId(guild, this.message!!.id) ?: return@actionButton
+            if (suggestion.status == SuggestionStatus.UNDER_REVIEW) {
+                respondEphemeral { content = "Suggestion is already Under Review" }
+                return@actionButton
+            }
             suggestionService.updateStatus(guild, suggestion, SuggestionStatus.UNDER_REVIEW)
-            this.acknowledgeEphemeralDeferredMessageUpdate()
+            acknowledgeEphemeralDeferredMessageUpdate()
         }
         actionButton("Complete", Emojis.whiteCheckMark) {
             val suggestion = suggestionService.findSuggestionByMessageId(guild, this.message!!.id) ?: return@actionButton
+            if (suggestion.status == SuggestionStatus.IMPLEMENTED) {
+                respondEphemeral { content = "Suggestion is already Complete" }
+                return@actionButton
+            }
             suggestionService.updateStatus(guild, suggestion, SuggestionStatus.IMPLEMENTED)
-            this.acknowledgeEphemeralDeferredMessageUpdate()
+            acknowledgeEphemeralDeferredMessageUpdate()
         }
         actionButton("Reset", Emojis.repeat) {
             val suggestion = suggestionService.findSuggestionByMessageId(guild, this.message!!.id) ?: return@actionButton
             suggestionService.resetVotes(guild, suggestion)
-            this.acknowledgeEphemeralDeferredMessageUpdate()
+            acknowledgeEphemeralDeferredMessageUpdate()
         }
     }
 }
