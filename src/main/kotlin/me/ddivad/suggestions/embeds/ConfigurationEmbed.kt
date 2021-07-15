@@ -18,6 +18,7 @@ suspend fun EmbedBuilder.createConfigurationEmbed(guild: Guild, config: GuildCon
     description = """
         Admin Role: ${guild.getRole(config.adminRoleId).mention}
         Staff Role: ${guild.getRole(config.staffRoleId).mention}
+        Suggestion Role: ${guild.getRole(config.requiredSuggestionRole).mention}
         Suggestion Channel: ${discord.getChannel(config.suggestionChannel)?.mention}
         Suggestion Review Channel: ${discord.getChannel(config.suggestionChannel)?.mention}
         Always Show Votes : ${if(config.showVotes) Emojis.whiteCheckMark else Emojis.x}

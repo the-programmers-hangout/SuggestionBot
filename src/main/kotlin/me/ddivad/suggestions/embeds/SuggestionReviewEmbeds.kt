@@ -24,9 +24,9 @@ suspend fun MenuBuilder.createSuggestionReviewMenu(discord: Discord, guild: Guil
     }
 
     buttons {
-        actionButton("Approve", Emojis.thumbsup) {
+        actionButton("Publish", Emojis.thumbsup) {
             val suggestion = suggestionService.findSuggestionByMessageId(guild, this.message!!.id) ?: return@actionButton
-            suggestionService.updateStatus(guild, suggestion, SuggestionStatus.POSTED)
+            suggestionService.updateStatus(guild, suggestion, SuggestionStatus.PUBLISHED)
             this.acknowledgeEphemeralDeferredMessageUpdate()
         }
         actionButton("Reject", Emojis.thumbdown) {
@@ -44,6 +44,11 @@ suspend fun MenuBuilder.createSuggestionReviewMenu(discord: Discord, guild: Guil
             suggestionService.updateStatus(guild, suggestion, SuggestionStatus.IMPLEMENTED)
             this.acknowledgeEphemeralDeferredMessageUpdate()
         }
+        actionButton("Reset", Emojis.repeat) {
+            val suggestion = suggestionService.findSuggestionByMessageId(guild, this.message!!.id) ?: return@actionButton
+            suggestionService.resetVotes(guild, suggestion)
+            this.acknowledgeEphemeralDeferredMessageUpdate()
+        }
     }
 }
 
@@ -59,7 +64,7 @@ suspend fun EmbedBuilder.createSuggestionReviewEmbed(guild: Guild, suggestion: S
     }
     color = when (suggestion.status) {
         SuggestionStatus.NEW -> Color.GREEN.kColor
-        SuggestionStatus.POSTED -> Color.YELLOW.kColor
+        SuggestionStatus.PUBLISHED -> Color.YELLOW.kColor
         SuggestionStatus.UNDER_REVIEW -> Color.ORANGE.kColor
         SuggestionStatus.IMPLEMENTED -> Color.MAGENTA.kColor
         SuggestionStatus.REJECTED -> Color.RED.kColor
@@ -74,12 +79,11 @@ suspend fun EmbedBuilder.createSuggestionReviewEmbed(guild: Guild, suggestion: S
             name = "Votes"
             value = """
                 Opinion: ${voteInfo.opinion}
-                Upvotes: ${voteInfo.upVotes} `${voteInfo.upvotePercentage} %`
-                Downvotes: ${voteInfo.downVotes} ` ${voteInfo.downVotePercentage} %`
+                Upvotes: ${voteInfo.upVotes} `${voteInfo.upvotePercentage}%`
+                Downvotes: ${voteInfo.downVotes} `${voteInfo.downVotePercentage}%`
             """.trimIndent()
         }
     }
-
     footer {
         text = "Suggestion ID: ${suggestion.id}"
     }

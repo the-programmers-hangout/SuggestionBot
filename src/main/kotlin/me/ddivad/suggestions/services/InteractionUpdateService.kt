@@ -20,7 +20,7 @@ class InteractionUpdateService(
             val guildConfig = configuration[guild.id] ?: return@forEach
 
             guildConfig.suggestions.forEach {
-                if (it.status in setOf(SuggestionStatus.NEW, SuggestionStatus.POSTED, SuggestionStatus.UNDER_REVIEW)) {
+                if (it.status in setOf(SuggestionStatus.NEW, SuggestionStatus.PUBLISHED, SuggestionStatus.UNDER_REVIEW)) {
                     it.reviewMessageId = suggestionService.resetSuggestionInteractions(guild, it)
                 }
             }

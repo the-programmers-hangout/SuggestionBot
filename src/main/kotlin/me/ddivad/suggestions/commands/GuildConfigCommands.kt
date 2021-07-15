@@ -56,6 +56,21 @@ fun guildConfigCommands(configuration: Configuration) = commands("Setup") {
         }
     }
 
+    guildCommand("setsuggstionrole") {
+        description = "Set the minimum required role to make a suggestion."
+        requiredPermission = Permissions.ADMINISTRATOR
+        execute(RoleArg) {
+            if (!configuration.hasGuildConfig(guild.id)) {
+                respond("Please run the **configure** command to set this initially.")
+                return@execute
+            }
+            val role = args.first
+            configuration[guild.id]?.requiredSuggestionRole = role.id
+            configuration.save()
+            respond("Role set to: **${role.name}**")
+        }
+    }
+
     guildCommand("setChannel") {
         description = "Set the review or public channel to be used for suggestions."
         requiredPermission = Permissions.ADMINISTRATOR

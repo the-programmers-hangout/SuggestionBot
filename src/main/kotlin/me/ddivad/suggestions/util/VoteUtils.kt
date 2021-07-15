@@ -1,6 +1,7 @@
 package me.ddivad.suggestions.util
 
 import me.ddivad.suggestions.dataclasses.Suggestion
+import me.ddivad.suggestions.embeds.createSuggestionReviewEmbed
 
 data class Vote(
     val opinion: Int,
@@ -22,7 +23,7 @@ fun getVoteCounts(suggestion: Suggestion): Vote {
         upVotes - downVotes,
         upVotes,
         downVotes,
-        upVotePercentage,
-        downVotePercentage
+        "%.${2}f".format(upVotePercentage).toDouble(),
+        "%.${2}f".format(downVotePercentage).toDouble()
     )
 }
