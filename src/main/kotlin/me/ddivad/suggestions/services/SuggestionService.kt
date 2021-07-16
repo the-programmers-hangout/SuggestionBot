@@ -21,13 +21,14 @@ import me.jakejmattson.discordkt.api.extensions.createMenu
 
 @KordPreview
 @Service
-class SuggestionService(private val configuration: Configuration, private val discord: Discord) {
+class SuggestionService(private val configuration: Configuration, private val discord: Discord, private val statsService: BotStatsService) {
     suspend fun addSuggestion(guild: Guild, suggestion: Suggestion) {
         val guildConfiguration = configuration[guild.id] ?: return
         val reviewChannel = guild.getChannelOf<TextChannel>(guildConfiguration.suggestionReviewChannel)
         reviewChannel.createMenu { createSuggestionReviewMenu(discord, guild, suggestion) }.let {
             suggestion.addReviewMessageId(it!!.id)
             guildConfiguration.suggestions.add(suggestion)
+            statsService.suggestionAdded(guild)
             configuration.save()
         }
     }
@@ -37,6 +38,7 @@ class SuggestionService(private val configuration: Configuration, private val di
         suggestion.downvotes.removeIf { it == user.id }
         if (user.id !in suggestion.upvotes) {
             suggestion.upvotes.add(user.id)
+            statsService.upvoteAdded(guild)
         }
         configuration.save()
     }
@@ -46,6 +48,7 @@ class SuggestionService(private val configuration: Configuration, private val di
         suggestion.upvotes.removeIf { it == user.id }
         if (user.id !in suggestion.downvotes) {
             suggestion.downvotes.add(user.id)
+            statsService.downvoteAdded(guild)
         }
         configuration.save()
     }

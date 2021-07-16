@@ -9,6 +9,7 @@ import me.jakejmattson.discordkt.api.dsl.Data
 data class Configuration(
     val ownerId: String = "insert id here",
     var prefix: String = "s!",
+    val statistics: Statistics = Statistics(),
     val guildConfigurations: MutableMap<Long, GuildConfiguration> = mutableMapOf()
 ) : Data("config/config.json") {
     fun hasGuildConfig(guildId: Snowflake) = guildConfigurations.containsKey(guildId.value)
@@ -53,4 +54,11 @@ data class GuildConfiguration(
     var removeVoteReactions: Boolean,
     var sendVotingDM: Boolean,
     val suggestions: MutableList<Suggestion> = mutableListOf(),
+    val statistics: Statistics = Statistics()
+)
+
+data class Statistics(
+    var totalSuggestions: Int = 0,
+    var totalUpvotes: Int = 0,
+    var totalDownvotes: Int = 0
 )

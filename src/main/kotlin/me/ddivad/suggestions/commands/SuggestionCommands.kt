@@ -6,6 +6,7 @@ import me.ddivad.suggestions.dataclasses.Configuration
 import me.ddivad.suggestions.dataclasses.Permissions
 import me.ddivad.suggestions.dataclasses.Suggestion
 import me.ddivad.suggestions.dataclasses.SuggestionStatus
+import me.ddivad.suggestions.embeds.createStatsEmbed
 import me.ddivad.suggestions.services.SuggestionService
 import me.jakejmattson.discordkt.api.arguments.ChoiceArg
 import me.jakejmattson.discordkt.api.arguments.EveryArg
@@ -91,6 +92,16 @@ fun suggestionCommands(configuration: Configuration, suggestionService: Suggesti
                         )
                     }
                 }
+            }
+        }
+    }
+
+    guildCommand("stats") {
+        description = "Set the status for a suggestion (backup for interaction buttons)"
+        requiredPermission = Permissions.STAFF
+        execute {
+            respond {
+                createStatsEmbed(guild, configuration)
             }
         }
     }

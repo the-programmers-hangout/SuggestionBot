@@ -1,5 +1,6 @@
 package me.ddivad.suggestions.services
 
+import dev.kord.core.entity.Guild
 import me.ddivad.suggestions.dataclasses.Configuration
 import me.jakejmattson.discordkt.api.Discord
 import me.jakejmattson.discordkt.api.annotations.Service
@@ -15,4 +16,34 @@ class BotStatsService(private val configuration: Configuration, private val disc
 
     val ping: String
         get() = "${discord.kord.gateway.averagePing}"
+
+    fun upvoteAdded(guild: Guild) {
+        with(configuration) {
+            configuration[guild.id]?.let {
+                it.statistics.totalUpvotes++
+            }
+            statistics.totalUpvotes++
+            save()
+        }
+    }
+
+    fun downvoteAdded(guild: Guild) {
+        with(configuration) {
+            configuration[guild.id]?.let {
+                it.statistics.totalDownvotes++
+            }
+            statistics.totalDownvotes++
+            save()
+        }
+    }
+
+    fun suggestionAdded(guild: Guild) {
+        with(configuration) {
+            configuration[guild.id]?.let {
+                it.statistics.totalSuggestions++
+            }
+            statistics.totalSuggestions++
+            save()
+        }
+    }
 }

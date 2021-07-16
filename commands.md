@@ -26,6 +26,7 @@
 | Commands  | Arguments             | Description                                                      |
 | --------- | --------------------- | ---------------------------------------------------------------- |
 | setStatus | Suggestion ID, Status | Set the status for a suggestion (backup for interaction buttons) |
+| stats     |                       | Set the status for a suggestion (backup for interaction buttons) |
 | suggest   | Suggestion            | Make a suggestion.                                               |
 
 ## Utility
