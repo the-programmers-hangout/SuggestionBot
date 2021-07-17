@@ -47,7 +47,7 @@ suspend fun main() {
             }
 
             addInlineField("Prefix", "`${it.prefix()}`")
-            addInlineField("Contributors", "[Link](https://github.com/the-programmers-hangout/JudgeBot/graphs/contributors)")
+            addInlineField("Contributors", "[Link](https://github.com/the-programmers-hangout/SuggestionBot/graphs/contributors)")
 
             val kotlinVersion = KotlinVersion.CURRENT
             val versions = it.discord.versions
