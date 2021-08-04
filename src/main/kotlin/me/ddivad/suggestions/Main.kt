@@ -2,6 +2,7 @@ package me.ddivad.suggestions
 
 import dev.kord.common.kColor
 import dev.kord.core.supplier.EntitySupplyStrategy
+import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import me.ddivad.suggestions.dataclasses.Configuration
 import me.ddivad.suggestions.dataclasses.Permissions
@@ -27,6 +28,7 @@ suspend fun main() {
             commandReaction = null
             theme = Color.MAGENTA
             entitySupplyStrategy = EntitySupplyStrategy.cacheWithCachingRestFallback
+            intents = Intents.nonPrivileged
             permissions(Permissions.NONE)
         }
 
