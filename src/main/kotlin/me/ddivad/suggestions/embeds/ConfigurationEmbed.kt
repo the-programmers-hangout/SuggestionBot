@@ -16,8 +16,6 @@ suspend fun EmbedBuilder.createConfigurationEmbed(guild: Guild, config: GuildCon
     color = Color.MAGENTA.kColor
     title = "Configuration"
     description = """
-        Admin Role: ${guild.getRole(config.adminRoleId).mention}
-        Staff Role: ${guild.getRole(config.staffRoleId).mention}
         Suggestion Role: ${guild.getRole(config.requiredSuggestionRole).mention}
         Suggestion Channel: ${discord.getChannel(config.suggestionChannel)?.mention}
         Suggestion Review Channel: ${discord.getChannel(config.suggestionReviewChannel)?.mention}

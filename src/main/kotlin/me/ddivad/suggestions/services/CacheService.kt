@@ -13,7 +13,7 @@ class CacheService(private val discord: Discord, private val configuration: Conf
         configuration.guildConfigurations.forEach { config ->
             try {
                 val guild = config.value.id!!.toSnowflake().let { discord.kord.getGuild(it) } ?: return@forEach
-                val roles = guild.withStrategy(EntitySupplyStrategy.cachingRest).roles.toList()
+                guild.withStrategy(EntitySupplyStrategy.cachingRest).roles.toList()
             } catch (ex: Exception) {
                 println(ex.message)
             }

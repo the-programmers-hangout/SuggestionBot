@@ -4,6 +4,7 @@ import me.ddivad.suggestions.dataclasses.BotPermissions
 import me.ddivad.suggestions.dataclasses.Configuration
 import me.jakejmattson.discordkt.commands.commands
 
+@Suppress("unused")
 fun configurationCommands(configuration: Configuration) = commands("Configuration", BotPermissions.Admin) {
     text("toggleShowVotes") {
         description = "Toggle votes being displayed on in-progress suggestions."

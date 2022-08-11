@@ -18,11 +18,9 @@ suspend fun main() {
     val token = System.getenv("BOT_TOKEN") ?: null
 
     bot(token) {
-        val configuration = data("config/config.json") { Configuration() }
+        data("config/config.json") { Configuration() }
 
-        prefix {
-            configuration.prefix
-        }
+        prefix { "/" }
 
         configure {
             commandReaction = null
@@ -33,7 +31,7 @@ suspend fun main() {
         }
 
         presence {
-            playing("s!suggest")
+            watching("suggestions")
         }
 
         onStart {

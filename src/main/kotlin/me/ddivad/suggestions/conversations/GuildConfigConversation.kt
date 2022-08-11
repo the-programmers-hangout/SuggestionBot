@@ -9,8 +9,6 @@ import me.jakejmattson.discordkt.conversations.conversation
 
 class ConfigurationConversation(private val configuration: Configuration) {
     fun createConfigurationConversation(guild: Guild) = conversation {
-        val adminRole = prompt(RoleArg, "Admin role:")
-        val staffRole = prompt(RoleArg, "Staff role:")
         val requiredSuggestionRole = prompt(RoleArg, "Required suggestion role:")
         val suggestionChannel = prompt(ChannelArg, "Suggestion channel:")
         val suggestionReviewChannel = prompt(ChannelArg, "Suggestion Review Channel:")
@@ -24,7 +22,7 @@ class ConfigurationConversation(private val configuration: Configuration) {
                     If disabled, votes will only show when suggestion status is something other than "Posted"
                 """.trimIndent()
                 field {
-                    value = "This can be changed using `${configuration.prefix}toggleShowVotes`"
+                    value = "This can be changed using `/toggleShowVotes`"
                 }
             }
             buttons {
@@ -42,7 +40,7 @@ class ConfigurationConversation(private val configuration: Configuration) {
                     If disabled, suggestions will be removed to keep votes anonymous.
                 """.trimIndent()
                 field {
-                    value = "This can be changed using `${configuration.prefix}toggleRemoveReactions`"
+                    value = "This can be changed using `/toggleRemoveReactions`"
                 }
             }
             buttons {
@@ -57,7 +55,7 @@ class ConfigurationConversation(private val configuration: Configuration) {
                 title = "Send voting confirmation DM?"
                 description = "Enabling this will send a confirmation DM to a user when they vote."
                 field {
-                    value = "This can be changed using `${configuration.prefix}toggleVotingDM`"
+                    value = "This can be changed using `/toggleVotingDM`"
                 }
             }
             buttons {
@@ -68,8 +66,6 @@ class ConfigurationConversation(private val configuration: Configuration) {
 
         configuration.setup(
             guild,
-            adminRole,
-            staffRole,
             requiredSuggestionRole,
             suggestionChannel,
             suggestionReviewChannel,

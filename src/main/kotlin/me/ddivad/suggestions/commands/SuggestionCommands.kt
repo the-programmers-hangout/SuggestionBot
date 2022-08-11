@@ -19,7 +19,6 @@ fun suggestionCommands(configuration: Configuration, suggestionService: Suggesti
         description = "Make a suggestion."
         requiredPermissions = BotPermissions.Everyone
         execute(EveryArg("Suggestion")) {
-
             if (guild != null) {
                 val guildConfiguration = configuration[guild!!.id] ?: return@execute
 
@@ -57,42 +56,16 @@ fun suggestionCommands(configuration: Configuration, suggestionService: Suggesti
     text("setStatus") {
         description = "Set the status for a suggestion (backup for interaction buttons)"
         requiredPermissions = BotPermissions.Admin
-        execute(IntegerArg("ID"), ChoiceArg("Status", "accepted", "rejected", "review", "implemented")) {
+        execute(IntegerArg("ID"), ChoiceArg("Status", "The status of this suggestion", "accepted", "rejected", "review", "implemented")) {
             val (id, status) = args
             val suggestion = suggestionService.findSuggestionById(guild, id)
+
             if (suggestion != null) {
                 when (status.lowercase()) {
-                    "accepted" -> {
-                        suggestionService.updateStatus(
-                            guild,
-                            suggestion,
-                            SuggestionStatus.PUBLISHED
-                        )
-                    }
-
-                    "review" -> {
-                        suggestionService.updateStatus(
-                            guild,
-                            suggestion,
-                            SuggestionStatus.UNDER_REVIEW
-                        )
-                    }
-
-                    "implemented" -> {
-                        suggestionService.updateStatus(
-                            guild,
-                            suggestion,
-                            SuggestionStatus.IMPLEMENTED
-                        )
-                    }
-
-                    "rejected" -> {
-                        suggestionService.updateStatus(
-                            guild,
-                            suggestion,
-                            SuggestionStatus.REJECTED
-                        )
-                    }
+                    "accepted" -> suggestionService.updateStatus(guild, suggestion, SuggestionStatus.PUBLISHED)
+                    "review" -> suggestionService.updateStatus(guild, suggestion, SuggestionStatus.UNDER_REVIEW)
+                    "implemented" -> suggestionService.updateStatus(guild, suggestion, SuggestionStatus.IMPLEMENTED)
+                    "rejected" -> suggestionService.updateStatus(guild, suggestion, SuggestionStatus.REJECTED)
                 }
             }
         }
