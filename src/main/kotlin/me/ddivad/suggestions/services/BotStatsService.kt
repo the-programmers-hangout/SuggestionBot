@@ -2,9 +2,9 @@ package me.ddivad.suggestions.services
 
 import dev.kord.core.entity.Guild
 import me.ddivad.suggestions.dataclasses.Configuration
-import me.jakejmattson.discordkt.api.Discord
-import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.extensions.toTimeString
+import me.jakejmattson.discordkt.Discord
+import me.jakejmattson.discordkt.annotations.Service
+import me.jakejmattson.discordkt.extensions.toTimeString
 import java.util.*
 
 @Service

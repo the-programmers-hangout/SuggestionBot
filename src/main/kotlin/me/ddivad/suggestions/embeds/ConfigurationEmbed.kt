@@ -21,8 +21,8 @@ suspend fun EmbedBuilder.createConfigurationEmbed(guild: Guild, config: GuildCon
         Suggestion Role: ${guild.getRole(config.requiredSuggestionRole).mention}
         Suggestion Channel: ${discord.getChannel(config.suggestionChannel)?.mention}
         Suggestion Review Channel: ${discord.getChannel(config.suggestionReviewChannel)?.mention}
-        Always Show Votes : ${if(config.showVotes) Emojis.whiteCheckMark else Emojis.x}
-        Remove Voting Reactions : ${if(config.removeVoteReactions) Emojis.whiteCheckMark else Emojis.x}
-        Send DM Confirmation : ${if(config.sendVotingDM) Emojis.whiteCheckMark else Emojis.x}
+        Always Show Votes : ${if (config.showVotes) Emojis.whiteCheckMark else Emojis.x}
+        Remove Voting Reactions : ${if (config.removeVoteReactions) Emojis.whiteCheckMark else Emojis.x}
+        Send DM Confirmation : ${if (config.sendVotingDM) Emojis.whiteCheckMark else Emojis.x}
     """.trimIndent()
 }

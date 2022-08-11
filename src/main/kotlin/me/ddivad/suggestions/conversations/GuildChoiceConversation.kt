@@ -1,27 +1,29 @@
 package me.ddivad.suggestions.conversations
 
+import dev.kord.common.annotation.KordPreview
 import dev.kord.common.kColor
 import dev.kord.core.entity.Guild
 import me.ddivad.suggestions.dataclasses.Configuration
 import me.ddivad.suggestions.dataclasses.Suggestion
 import me.ddivad.suggestions.services.SuggestionService
-import me.jakejmattson.discordkt.api.arguments.IntegerRangeArg
-import me.jakejmattson.discordkt.api.conversations.conversation
+import me.jakejmattson.discordkt.arguments.IntegerRangeArg
+import me.jakejmattson.discordkt.conversations.conversation
+import me.jakejmattson.discordkt.extensions.pfpUrl
+import me.jakejmattson.discordkt.extensions.thumbnail
 import java.awt.Color
 
+@KordPreview
 fun guildChoiceConversation(
     guilds: List<Guild>,
     suggestionMessage: String,
     suggestionService: SuggestionService,
     configuration: Configuration
 ) = conversation {
-    val guildIndex = promptEmbed(IntegerRangeArg(1, guilds.size)) {
+    val guildIndex = prompt(IntegerRangeArg(1, guilds.size)) {
         title = "Select Server"
         description = "Respond with the server you want your suggestion to be posted."
-        thumbnail {
-            url = discord.kord.getSelf().avatar.url
-        }
         color = Color.MAGENTA.kColor
+        thumbnail(discord.kord.getSelf().pfpUrl)
         guilds.toList().forEachIndexed { index, guild ->
             field {
                 name = "${index + 1}) ${guild.name}"

@@ -1,13 +1,12 @@
 package me.ddivad.suggestions.commands
 
+import me.ddivad.suggestions.dataclasses.BotPermissions
 import me.ddivad.suggestions.dataclasses.Configuration
-import me.ddivad.suggestions.dataclasses.Permissions
-import me.jakejmattson.discordkt.api.dsl.commands
+import me.jakejmattson.discordkt.commands.commands
 
-fun configurationCommands(configuration: Configuration) = commands("Configuration") {
-    guildCommand("toggleShowVotes") {
+fun configurationCommands(configuration: Configuration) = commands("Configuration", BotPermissions.Admin) {
+    text("toggleShowVotes") {
         description = "Toggle votes being displayed on in-progress suggestions."
-        requiredPermission = Permissions.ADMINISTRATOR
         execute {
             if (!configuration.hasGuildConfig(guild.id)) {
                 respond("Please run the **configure** command to set this initially.")
@@ -19,9 +18,8 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
         }
     }
 
-    guildCommand("toggleRemoveReactions") {
+    text("toggleRemoveReactions") {
         description = "Toggle reactions being removed on in-progress suggestions."
-        requiredPermission = Permissions.ADMINISTRATOR
         execute {
             if (!configuration.hasGuildConfig(guild.id)) {
                 respond("Please run the **configure** command to set this initially.")
@@ -33,9 +31,8 @@ fun configurationCommands(configuration: Configuration) = commands("Configuratio
         }
     }
 
-    guildCommand("toggleVotingDM") {
+    text("toggleVotingDM") {
         description = "Toggle DMs being sent upon voting for a suggestions."
-        requiredPermission = Permissions.ADMINISTRATOR
         execute {
             if (!configuration.hasGuildConfig(guild.id)) {
                 respond("Please run the **configure** command to set this initially.")

@@ -1,25 +1,23 @@
 package me.ddivad.suggestions.conversations
 
-import dev.kord.common.kColor
 import dev.kord.core.entity.Guild
 import dev.kord.x.emoji.Emojis
 import me.ddivad.suggestions.dataclasses.Configuration
-import me.ddivad.suggestions.embeds.createConfigurationEmbed
-import me.jakejmattson.discordkt.api.arguments.ChannelArg
-import me.jakejmattson.discordkt.api.arguments.RoleArg
-import me.jakejmattson.discordkt.api.conversations.conversation
+import me.jakejmattson.discordkt.arguments.ChannelArg
+import me.jakejmattson.discordkt.arguments.RoleArg
+import me.jakejmattson.discordkt.conversations.conversation
 
 class ConfigurationConversation(private val configuration: Configuration) {
     fun createConfigurationConversation(guild: Guild) = conversation {
-        val adminRole = promptMessage(RoleArg, "Admin role:")
-        val staffRole = promptMessage(RoleArg, "Staff role:")
-        val requiredSuggestionRole = promptMessage(RoleArg, "Required suggestion role:")
-        val suggestionChannel = promptMessage(ChannelArg, "Suggestion channel:")
-        val suggestionReviewChannel = promptMessage(ChannelArg, "Suggestion Review Channel:")
+        val adminRole = prompt(RoleArg, "Admin role:")
+        val staffRole = prompt(RoleArg, "Staff role:")
+        val requiredSuggestionRole = prompt(RoleArg, "Required suggestion role:")
+        val suggestionChannel = prompt(ChannelArg, "Suggestion channel:")
+        val suggestionReviewChannel = prompt(ChannelArg, "Suggestion Review Channel:")
 
-        val showVotes = promptButton<Boolean> {
+        val showVotes = promptButton {
             embed {
-                color = discord.configuration.theme?.kColor
+                color = discord.configuration.theme
                 title = "Show votes on public suggestions?"
                 description = """
                     Enabling this will show votes on public suggestions at all times. 
@@ -35,9 +33,9 @@ class ConfigurationConversation(private val configuration: Configuration) {
             }
         }
 
-        val removeReactions = promptButton<Boolean> {
+        val removeReactions = promptButton {
             embed {
-                color = discord.configuration.theme?.kColor
+                color = discord.configuration.theme
                 title = "Remove reactions while voting on suggestions?"
                 description = """
                     Enabling this will remove reactions when users vote on suggestions. 
@@ -53,9 +51,9 @@ class ConfigurationConversation(private val configuration: Configuration) {
             }
         }
 
-        val sendDM = promptButton<Boolean> {
+        val sendDM = promptButton {
             embed {
-                color = discord.configuration.theme?.kColor
+                color = discord.configuration.theme
                 title = "Send voting confirmation DM?"
                 description = "Enabling this will send a confirmation DM to a user when they vote."
                 field {

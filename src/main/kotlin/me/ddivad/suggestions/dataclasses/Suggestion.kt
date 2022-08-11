@@ -1,11 +1,14 @@
 package me.ddivad.suggestions.dataclasses
 
 import dev.kord.common.entity.Snowflake
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class SuggestionStatus {
     NEW, PUBLISHED, UNDER_REVIEW, IMPLEMENTED, REJECTED
 }
 
+@Serializable
 data class Suggestion(
     val author: Snowflake,
     val suggestion: String,

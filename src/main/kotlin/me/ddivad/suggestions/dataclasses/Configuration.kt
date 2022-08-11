@@ -4,16 +4,18 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Role
 import dev.kord.core.entity.channel.TextChannel
-import me.jakejmattson.discordkt.api.dsl.Data
+import kotlinx.serialization.Serializable
+import me.jakejmattson.discordkt.dsl.Data
 
+@Serializable
 data class Configuration(
     val ownerId: String = "insert id here",
     var prefix: String = "s!",
     val statistics: Statistics = Statistics(),
-    val guildConfigurations: MutableMap<Long, GuildConfiguration> = mutableMapOf()
-) : Data("config/config.json") {
-    fun hasGuildConfig(guildId: Snowflake) = guildConfigurations.containsKey(guildId.value)
-    operator fun get(id: Snowflake) = guildConfigurations[id.value]
+    val guildConfigurations: MutableMap<Snowflake, GuildConfiguration> = mutableMapOf()) : Data() {
+    fun hasGuildConfig(guildId: Snowflake) = guildConfigurations.containsKey(guildId)
+    operator fun get(id: Snowflake) = guildConfigurations[id]
+
     fun setup(
         guild: Guild,
         adminRole: Role,
@@ -25,10 +27,10 @@ data class Configuration(
         removeReactions: Boolean,
         sendVotingDM: Boolean
     ) {
-        if (guildConfigurations[guild.id.value] != null) return
+        if (guildConfigurations[guild.id] != null) return
 
         val newConfiguration = GuildConfiguration(
-            guild.id.value,
+            guild.id.value.toLong(),
             staffRole.id,
             adminRole.id,
             requiredSuggestionRole.id,
@@ -38,11 +40,12 @@ data class Configuration(
             removeReactions,
             sendVotingDM
         )
-        guildConfigurations[guild.id.value] = newConfiguration
+        guildConfigurations[guild.id] = newConfiguration
         save()
     }
 }
 
+@Serializable
 data class GuildConfiguration(
     val id: Long? = null,
     var staffRoleId: Snowflake,
@@ -57,6 +60,7 @@ data class GuildConfiguration(
     val statistics: Statistics = Statistics()
 )
 
+@Serializable
 data class Statistics(
     var totalSuggestions: Int = 0,
     var totalUpvotes: Int = 0,

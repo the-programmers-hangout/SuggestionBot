@@ -31,6 +31,6 @@ fun EmbedBuilder.createVotingConfirmation(guild: Guild, suggestion: Suggestion, 
 
     footer {
         icon = guild.getIconUrl(Image.Format.PNG) ?: ""
-        text = "${guild.name}"
+        text = guild.name
     }
 }

@@ -3,9 +3,9 @@ package me.ddivad.suggestions.services
 import dev.kord.common.annotation.KordPreview
 import me.ddivad.suggestions.dataclasses.Configuration
 import me.ddivad.suggestions.dataclasses.SuggestionStatus
-import me.jakejmattson.discordkt.api.Discord
-import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.extensions.toSnowflake
+import me.jakejmattson.discordkt.Discord
+import me.jakejmattson.discordkt.annotations.Service
+import me.jakejmattson.discordkt.extensions.toSnowflake
 
 @KordPreview
 @Service
