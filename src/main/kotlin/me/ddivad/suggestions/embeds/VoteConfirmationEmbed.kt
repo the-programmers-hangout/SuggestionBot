@@ -9,7 +9,12 @@ import me.ddivad.suggestions.dataclasses.GuildConfiguration
 import me.ddivad.suggestions.dataclasses.Suggestion
 import java.awt.Color
 
-fun EmbedBuilder.createVotingConfirmation(guild: Guild, suggestion: Suggestion, config: GuildConfiguration, emoji: ReactionEmoji) {
+fun EmbedBuilder.createVotingConfirmation(
+    guild: Guild,
+    suggestion: Suggestion,
+    config: GuildConfiguration,
+    emoji: ReactionEmoji
+) {
     thumbnail {
         url = guild.getIconUrl(Image.Format.PNG) ?: ""
     }
@@ -31,6 +36,6 @@ fun EmbedBuilder.createVotingConfirmation(guild: Guild, suggestion: Suggestion, 
 
     footer {
         icon = guild.getIconUrl(Image.Format.PNG) ?: ""
-        text = "${guild.name}"
+        text = guild.name
     }
 }

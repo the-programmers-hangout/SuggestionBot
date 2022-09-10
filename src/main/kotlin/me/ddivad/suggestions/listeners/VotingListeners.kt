@@ -6,8 +6,8 @@ import dev.kord.x.emoji.Emojis
 import me.ddivad.suggestions.dataclasses.Configuration
 import me.ddivad.suggestions.embeds.createVotingConfirmation
 import me.ddivad.suggestions.services.SuggestionService
-import me.jakejmattson.discordkt.api.dsl.listeners
-import me.jakejmattson.discordkt.api.extensions.sendPrivateMessage
+import me.jakejmattson.discordkt.dsl.listeners
+import me.jakejmattson.discordkt.extensions.sendPrivateMessage
 
 @KordPreview
 @Suppress("unused")

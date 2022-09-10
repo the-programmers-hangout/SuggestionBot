@@ -16,13 +16,11 @@ suspend fun EmbedBuilder.createConfigurationEmbed(guild: Guild, config: GuildCon
     color = Color.MAGENTA.kColor
     title = "Configuration"
     description = """
-        Admin Role: ${guild.getRole(config.adminRoleId).mention}
-        Staff Role: ${guild.getRole(config.staffRoleId).mention}
-        Suggestion Role: ${guild.getRole(config.requiredSuggestionRole).mention}
+        Suggestion Role: ${config.requiredSuggestionRole?.let { guild.getRole(it).mention } ?: "None"}
         Suggestion Channel: ${discord.getChannel(config.suggestionChannel)?.mention}
         Suggestion Review Channel: ${discord.getChannel(config.suggestionReviewChannel)?.mention}
-        Always Show Votes : ${if(config.showVotes) Emojis.whiteCheckMark else Emojis.x}
-        Remove Voting Reactions : ${if(config.removeVoteReactions) Emojis.whiteCheckMark else Emojis.x}
-        Send DM Confirmation : ${if(config.sendVotingDM) Emojis.whiteCheckMark else Emojis.x}
+        Always Show Votes : ${if (config.showVotes) Emojis.whiteCheckMark else Emojis.x}
+        Remove Voting Reactions : ${if (config.removeVoteReactions) Emojis.whiteCheckMark else Emojis.x}
+        Send DM Confirmation : ${if (config.sendVotingDM) Emojis.whiteCheckMark else Emojis.x}
     """.trimIndent()
 }
