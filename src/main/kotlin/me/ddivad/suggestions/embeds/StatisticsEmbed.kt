@@ -17,12 +17,15 @@ fun EmbedBuilder.createStatsEmbed(guild: Guild, configuration: Configuration) {
     color = Color.MAGENTA.kColor
     title = "Suggestion Stats"
     description = """
-        **Overall**
-        > Suggestions: ${statistics?.overall?.suggestions}
-        > Votes: ${statistics?.overall?.votes}
-        > Upvotes: ${statistics?.overall?.upVotes} `${statistics?.overall?.upvotePercentage}%`
-        > Downvotes: ${statistics?.overall?.downVotes} `${statistics?.overall?.downVotePercentage}%`
-         
+        ${
+        if (configuration.guildConfigurations.size > 1)
+            "**Overall**\n" +
+                    "> Suggestions: ${statistics?.overall?.suggestions}\n" +
+                    "> Votes: ${statistics?.overall?.votes}\n" +
+                    "> Upvotes: ${statistics?.overall?.upVotes} `${statistics?.overall?.upvotePercentage}%`\n" +
+                    "> Downvotes: ${statistics?.overall?.downVotes} `${statistics?.overall?.downVotePercentage}%`" else ""
+    }
+       
         **Guild**
         > Suggestions: ${statistics?.guild?.suggestions}
         > Votes: ${statistics?.guild?.votes}

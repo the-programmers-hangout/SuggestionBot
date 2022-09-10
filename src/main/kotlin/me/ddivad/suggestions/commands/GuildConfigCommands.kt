@@ -52,7 +52,7 @@ fun guildConfigCommands(configuration: Configuration) = subcommand("Configuratio
             }
             val role = args.first
             configuration.edit { guildConfigurations[guild.id]?.requiredSuggestionRole = role.id }
-            respond("Role set to: **${role.name}**")
+            respondPublic("Role set to: **${role.name}**")
         }
     }
 
@@ -73,7 +73,7 @@ fun guildConfigCommands(configuration: Configuration) = subcommand("Configuratio
                     configuration.edit { guildConfigurations[guild.id]?.suggestionReviewChannel = channel.id }
                 }
             }
-            respond("Set the **$option** channel to ${channel.mention}")
+            respondPublic("Set the **$option** channel to ${channel.mention}")
         }
     }
 
@@ -85,7 +85,7 @@ fun guildConfigCommands(configuration: Configuration) = subcommand("Configuratio
             }
             val guildConfig = configuration[guild.id] ?: return@execute
             guildConfig.showVotes = !guildConfig.showVotes
-            respond("Toggled displaying votes ${if (guildConfig.showVotes) "**On**" else "**Off**"}")
+            respondPublic("Toggled displaying votes ${if (guildConfig.showVotes) "**On**" else "**Off**"}")
         }
     }
 
@@ -97,7 +97,7 @@ fun guildConfigCommands(configuration: Configuration) = subcommand("Configuratio
             }
             val guildConfig = configuration[guild.id] ?: return@execute
             guildConfig.removeVoteReactions = !guildConfig.removeVoteReactions
-            respond("Toggled removing reactions ${if (guildConfig.removeVoteReactions) "**On**" else "**Off**"}")
+            respondPublic("Toggled removing reactions ${if (guildConfig.removeVoteReactions) "**On**" else "**Off**"}")
         }
     }
 
@@ -109,14 +109,14 @@ fun guildConfigCommands(configuration: Configuration) = subcommand("Configuratio
             }
             val guildConfig = configuration[guild.id] ?: return@execute
             guildConfig.sendVotingDM = !guildConfig.sendVotingDM
-            respond("Toggled sending DMs ${if (guildConfig.sendVotingDM) "**On**" else "**Off**"}")
+            respondPublic("Toggled sending DMs ${if (guildConfig.sendVotingDM) "**On**" else "**Off**"}")
         }
     }
 
     sub("view", "View guild configuration") {
         execute {
             val config = configuration[guild.id] ?: return@execute
-            respond { createConfigurationEmbed(guild, config) }
+            respondPublic { createConfigurationEmbed(guild, config) }
         }
     }
 }

@@ -59,7 +59,7 @@ fun suggestionCommands(configuration: Configuration, suggestionService: Suggesti
 
     slash("stats", "Get stats about guild suggestions", BotPermissions.Staff) {
         execute {
-            respond {
+            respondPublic {
                 createStatsEmbed(guild, configuration)
             }
         }
