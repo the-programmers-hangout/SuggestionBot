@@ -9,14 +9,6 @@ import java.util.*
 
 @Service
 class BotStatsService(private val configuration: Configuration, private val discord: Discord) {
-    private var startTime: Date = Date()
-
-    val uptime: String
-        get() = ((Date().time - startTime.time) / 1000).toTimeString()
-
-    val ping: String
-        get() = "${discord.kord.gateway.averagePing}"
-
     fun upvoteAdded(guild: Guild) {
         with(configuration) {
             configuration[guild.id]?.let {

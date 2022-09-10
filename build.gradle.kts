@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation("me.jakejmattson:DiscordKt:0.23.3")
+    implementation("me.jakejmattson:DiscordKt:0.23.4")
 }
 
 tasks {
@@ -27,7 +27,6 @@ tasks {
             setProperty("description", project.description)
             setProperty("version", version.toString())
             setProperty("url", "https://github.com/the-programmers-hangout/SuggestionBot")
-
             store(file("src/main/resources/bot.properties").outputStream(), null)
         }
     }

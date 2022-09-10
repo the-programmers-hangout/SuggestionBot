@@ -1,7 +1,10 @@
 package me.ddivad.suggestions.commands
 
 import dev.kord.common.annotation.KordPreview
-import me.ddivad.suggestions.dataclasses.*
+import me.ddivad.suggestions.dataclasses.BotPermissions
+import me.ddivad.suggestions.dataclasses.Configuration
+import me.ddivad.suggestions.dataclasses.Suggestion
+import me.ddivad.suggestions.dataclasses.SuggestionStatus
 import me.ddivad.suggestions.embeds.createStatsEmbed
 import me.ddivad.suggestions.services.SuggestionService
 import me.jakejmattson.discordkt.arguments.ChoiceArg
@@ -12,25 +15,34 @@ import me.jakejmattson.discordkt.commands.commands
 @KordPreview
 @Suppress("unused")
 fun suggestionCommands(configuration: Configuration, suggestionService: SuggestionService) = commands("Suggestions") {
-    slash("suggest") {
-        description = "Make a suggestion."
-        requiredPermissions = BotPermissions.Everyone
+    slash("suggest", "Make a suggestion.", BotPermissions.Everyone) {
         execute(EveryArg("Suggestion")) {
             val guildConfiguration = configuration[guild.id] ?: return@execute
 
-            if (author.asMember(guild.id).roleIds.contains(guildConfiguration.requiredSuggestionRole)) {
-                val nextId: Int = if (guildConfiguration.suggestions.isEmpty()) 1 else guildConfiguration.suggestions.maxByOrNull { it.id }!!.id + 1
+            if (guildConfiguration.requiredSuggestionRole == null || author.asMember(guild.id).roleIds.contains(
+                    guildConfiguration.requiredSuggestionRole
+                )
+            ) {
+                val nextId: Int =
+                    if (guildConfiguration.suggestions.isEmpty()) 1 else guildConfiguration.suggestions.maxByOrNull { it.id }!!.id + 1
                 val suggestion = Suggestion(author.id, args.first, id = nextId)
                 suggestionService.addSuggestion(guild, suggestion)
-                respond("Suggestion added to the pool. If accepted, it will appear in ${guild.getChannel(guildConfiguration.suggestionChannel).mention}")
+                respond(
+                    "Suggestion added to the pool. If accepted, it will appear in ${
+                        guild.getChannel(
+                            guildConfiguration.suggestionChannel
+                        ).mention
+                    }"
+                )
             } else respond("Sorry, you don't meet the role requirements to post a suggestion.")
         }
     }
 
-    text("setStatus") {
-        description = "Set the status for a suggestion (backup for interaction buttons)"
-        requiredPermissions = BotPermissions.Admin
-        execute(IntegerArg("ID"), ChoiceArg("Status", "The status of this suggestion", "accepted", "rejected", "review", "implemented")) {
+    slash("setStatus", "Set the status for a suggestion (backup for interaction buttons)", BotPermissions.Admin) {
+        execute(
+            IntegerArg("ID"),
+            ChoiceArg("Status", "The status of this suggestion", "accepted", "rejected", "review", "implemented")
+        ) {
             val (id, status) = args
             val suggestion = suggestionService.findSuggestionById(guild, id)
 
@@ -45,9 +57,7 @@ fun suggestionCommands(configuration: Configuration, suggestionService: Suggesti
         }
     }
 
-    text("stats") {
-        description = "Set the status for a suggestion (backup for interaction buttons)"
-        requiredPermissions = BotPermissions.Staff
+    slash("stats", "Get stats about guild suggestions", BotPermissions.Staff) {
         execute {
             respond {
                 createStatsEmbed(guild, configuration)

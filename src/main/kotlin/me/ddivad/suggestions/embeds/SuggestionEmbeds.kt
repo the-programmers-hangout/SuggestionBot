@@ -7,6 +7,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import me.ddivad.suggestions.dataclasses.GuildConfiguration
 import me.ddivad.suggestions.dataclasses.Suggestion
 import me.ddivad.suggestions.dataclasses.SuggestionStatus
+import me.ddivad.suggestions.util.Vote
 import me.ddivad.suggestions.util.getVoteCounts
 import me.jakejmattson.discordkt.extensions.addField
 import me.jakejmattson.discordkt.extensions.pfpUrl
@@ -36,7 +37,7 @@ suspend fun EmbedBuilder.createSuggestionEmbed(guild: Guild, suggestion: Suggest
 
     val voteInfo = getVoteCounts(suggestion)
 
-    if (config.showVotes || suggestion.status != SuggestionStatus.PUBLISHED) {
+    if (hasVotes(voteInfo) && (config.showVotes || suggestion.status != SuggestionStatus.PUBLISHED)) {
         field {
             name = "Votes"
             value = """
@@ -49,11 +50,16 @@ suspend fun EmbedBuilder.createSuggestionEmbed(guild: Guild, suggestion: Suggest
 
     if (config.removeVoteReactions && suggestion.status == SuggestionStatus.PUBLISHED) {
         field {
-            value = "Note: reactions are removed after voting, but all votes are counted. Results will be made available later."
+            value =
+                "Note: reactions are removed after voting, but all votes are counted. Results will be made available later."
         }
     }
 
     footer {
         text = "Suggestion ID: ${suggestion.id}"
     }
+}
+
+private fun hasVotes(vote: Vote): Boolean {
+    return vote.upVotes > 0 || vote.downVotes > 0
 }

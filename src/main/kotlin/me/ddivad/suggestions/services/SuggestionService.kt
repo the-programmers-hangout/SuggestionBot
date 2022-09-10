@@ -24,7 +24,11 @@ import me.jakejmattson.discordkt.extensions.createMenu
 
 @KordPreview
 @Service
-class SuggestionService(private val configuration: Configuration, private val discord: Discord, private val statsService: BotStatsService) {
+class SuggestionService(
+    private val configuration: Configuration,
+    private val discord: Discord,
+    private val statsService: BotStatsService
+) {
     suspend fun addSuggestion(guild: Guild, suggestion: Suggestion) {
         val guildConfiguration = configuration[guild.id] ?: return
         val reviewChannel = guild.getChannelOf<TextChannel>(guildConfiguration.suggestionReviewChannel)
@@ -62,11 +66,11 @@ class SuggestionService(private val configuration: Configuration, private val di
 
         val reviewMessage = this.getReviewMessage(guild, suggestion.reviewMessageId)
         val suggestionMessage = this.getPublishedMessage(guild, suggestion.publishedMessageId)
+        val suggestionChannel = guild.getChannelOf<TextChannel>(guildConfiguration.suggestionChannel)
 
         when (suggestion.status) {
             SuggestionStatus.PUBLISHED -> {
                 if (suggestion.publishedMessageId == null) {
-                    val suggestionChannel = guild.getChannelOf<TextChannel>(guildConfiguration.suggestionChannel)
                     suggestionChannel.createEmbed { createSuggestionEmbed(guild, suggestion, guildConfiguration) }.let {
                         it.addReaction(Emojis.thumbsup.toReaction())
                         it.addReaction(Emojis.thumbdown.toReaction())
@@ -74,12 +78,36 @@ class SuggestionService(private val configuration: Configuration, private val di
                     }
                 }
                 if (guildConfiguration.showVotes) {
-                    suggestionMessage?.edit { this.embed { createSuggestionEmbed(guild, suggestion, guildConfiguration) } }
+                    suggestionMessage?.edit {
+                        this.embed {
+                            createSuggestionEmbed(
+                                guild,
+                                suggestion,
+                                guildConfiguration
+                            )
+                        }
+                    }
                 }
                 reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
             }
 
             in setOf(SuggestionStatus.UNDER_REVIEW, SuggestionStatus.IMPLEMENTED, SuggestionStatus.REJECTED) -> {
+                if (suggestionMessage != null) {
+                    suggestionMessage.deleteAllReactions()
+                    suggestionMessage.edit {
+                        this.embed {
+                            createSuggestionEmbed(
+                                guild,
+                                suggestion,
+                                guildConfiguration
+                            )
+                        }
+                    }
+                } else if (suggestion.status == SuggestionStatus.IMPLEMENTED) {
+                    suggestionChannel.createEmbed { createSuggestionEmbed(guild, suggestion, guildConfiguration) }.let {
+                        suggestion.addPublishMessageId(it.id)
+                    }
+                }
                 suggestionMessage?.deleteAllReactions()
                 suggestionMessage?.edit { this.embed { createSuggestionEmbed(guild, suggestion, guildConfiguration) } }
                 reviewMessage?.edit { this.embed { createSuggestionReviewEmbed(guild, suggestion) } }
